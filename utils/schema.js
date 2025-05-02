@@ -1,58 +1,48 @@
-import { serial, text, varchar, timestamp, pgTable } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { serial, text, varchar } from "drizzle-orm/pg-core";
+import { pgTable } from "drizzle-orm/pg-core";
 
-export const MockInterview = pgTable('mock_interview', {
-  id: serial('id').primaryKey(),
-  jsonMockResp: text('json_mock_resp').notNull(),
-  jobPosition: varchar('job_position').notNull(),
-  jobDesc: varchar('job_desc').notNull(),
-  jobExperience: varchar('job_experience').notNull(),
-  createdBy: varchar('created_by').notNull(),
-  createdAt: timestamp('created_at').defaultNow(),
-  mockId: varchar('mock_id').notNull().unique()
+export const MockInterview = pgTable('mockInterview', {
+    id: serial('id').primaryKey(),
+    jsonMockResp: text('jsonMockResp').notNull(),
+    jobPosition: varchar('jobPosition').notNull(),
+    jobDesc: varchar('jobDesc').notNull(),
+    jobExperience: varchar('jobExperience').notNull(),
+    createdBy: varchar('createdBy').notNull(),
+    createdAt: varchar('createdAt'),
+    mockId: varchar('mockId').notNull()
 });
 
 export const Question = pgTable('question', {
     id: serial('id').primaryKey(),
-    mockQuestionJsonResp: text('mock_question_json_resp').notNull(),
-    jobPosition: varchar('job_position').notNull(),
-    jobDesc: varchar('job_desc').notNull(),
-    jobExperience: varchar('job_experience').notNull(),
-    typeQuestion: varchar('type_question').notNull(),
+    MockQuestionJsonResp: text('MockQuestionJsonResp').notNull(),
+    jobPosition: varchar('jobPosition').notNull(),
+    jobDesc: varchar('jobDesc').notNull(),
+    jobExperience: varchar('jobExperience').notNull(),
+    typeQuestion: varchar('typeQuestion').notNull(),
     company: varchar('company').notNull(),
-    createdBy: varchar('created_by').notNull(),
-    createdAt: timestamp('created_at', { mode: 'date' }).defaultNow(), // Changed to timestamp
-    mockId: varchar('mock_id').notNull().unique()
-  });
-
-export const UserAnswer = pgTable('user_answer', {
-  id: serial('id').primaryKey(),
-  mockIdRef: varchar('mock_id_ref').notNull(),
-  question: varchar('question').notNull(),
-  correctAns: text('correct_ans'),
-  userAns: text('user_ans'),
-  feedback: text('feedback'),
-  rating: varchar('rating'),
-  userEmail: varchar('user_email'),
-  createdAt: timestamp('created_at').defaultNow()
+    createdBy: varchar('createdBy').notNull(),
+    createdAt: varchar('createdAt'),
+    mockId: varchar('mockId').notNull()
 });
 
-export const Newsletter = pgTable('newsletter', {
-  id: serial('id').primaryKey(),
-  newName: varchar('new_name'),
-  newEmail: varchar('new_email'),
-  newMessage: text('new_message'),
-  createdAt: timestamp('created_at').defaultNow()
-});
 
-// Define relations
-export const questionRelations = relations(Question, ({ many }) => ({
-  answers: many(UserAnswer)
-}));
 
-export const userAnswerRelations = relations(UserAnswer, ({ one }) => ({
-  question: one(Question, {
-    fields: [UserAnswer.mockIdRef],
-    references: [Question.mockId]
-  })
-}));
+export const UserAnswer = pgTable('userAnswer',{
+    id: serial('id').primaryKey(),
+    mockIdRef: varchar('mockId').notNull(),
+    question: varchar('question').notNull(),
+    correctAns: text('correctAns'),
+    userAns: text('userAns'),
+    feedback: text('feedback'),
+    rating: varchar('rating'),
+    userEmail: varchar('userEmail'),
+    createdAt: varchar('createdAt')
+})
+
+export const Newsletter = pgTable('newsletter',{
+    id: serial('id').primaryKey(),
+    newName: varchar('newName'),
+    newEmail: varchar('newEmail'),
+    newMessage: text('newMessage'),
+    createdAt: varchar('createdAt')
+})
