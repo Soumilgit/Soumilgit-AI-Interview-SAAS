@@ -19,14 +19,15 @@ const page = ({ params }) => {
   }, []);
 
   const getQuestionDetails = async () => {
-    const result = await db
-      .select()
-      .from(Question)
-      .where(eq(Question.mockId, params.pyqId));
-      const questionData = JSON.parse(result[0].MockQuestionJsonResp);
-    setQuestionData(questionData);
-    // console.log("data", questionData);
-  };
+  const result = await db
+    .select()
+    .from(Question)
+    .where(eq(Question.mockId, params.pyqId));
+  
+  const parsed = JSON.parse(result[0].mockQuestionJsonResp);
+  setQuestionData(parsed.questions);
+};
+
 
 
 

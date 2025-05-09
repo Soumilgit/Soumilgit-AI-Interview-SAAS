@@ -14,7 +14,7 @@ export const MockInterview = pgTable('mockInterview', {
 
 export const Question = pgTable('question', {
     id: serial('id').primaryKey(),
-    MockQuestionJsonResp: text('MockQuestionJsonResp').notNull(),
+    mockQuestionJsonResp: text('mockQuestionJsonResp').notNull(),
     jobPosition: varchar('jobPosition').notNull(),
     jobDesc: varchar('jobDesc').notNull(),
     jobExperience: varchar('jobExperience').notNull(),
