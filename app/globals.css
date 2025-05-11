@@ -1,76 +1,257 @@
-  @tailwind base;
-  @tailwind components;
-  @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-  @layer base {
-    :root {
-      --background: 0 0% 100%;
-      --foreground: 0 0% 3.9%;
+@layer base {
+  :root {
+    --background: 260 30% 98%;
+    --foreground: 260 50% 10%;
 
-      --card: 0 0% 100%;
-      --card-foreground: 0 0% 3.9%;
+    --card: 260 30% 99%;
+    --card-foreground: 260 50% 10%;
 
-      --popover: 0 0% 100%;
-      --popover-foreground: 0 0% 3.9%;
+    --popover: 260 30% 99%;
+    --popover-foreground: 260 50% 10%;
 
-      --primary: 0 0% 9%;
-      --primary-foreground: 0 0% 98%;
+    --primary: 260 60% 45%;
+    --primary-foreground: 260 10% 98%;
 
-      --secondary: 0 0% 96.1%;
-      --secondary-foreground: 0 0% 9%;
+    --secondary: 180 60% 45%;
+    --secondary-foreground: 180 10% 10%;
 
-      --muted: 0 0% 96.1%;
-      --muted-foreground: 0 0% 45.1%;
+    --muted: 260 20% 96%;
+    --muted-foreground: 260 20% 40%;
 
-      --accent: 0 0% 96.1%;
-      --accent-foreground: 0 0% 9%;
+    --accent: 330 80% 50%;
+    --accent-foreground: 330 10% 98%;
 
-      --destructive: 0 84.2% 60.2%;
-      --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-      --border: 0 0% 89.8%;
-      --input: 0 0% 89.8%;
-      --ring: 0 0% 3.9%;
+    --border: 260 30% 86%;
+    --input: 260 30% 86%;
+    --ring: 260 60% 45%;
 
-      --radius: 0.5rem;
-    }
-
-    .dark {
-      --background: 0 0% 3.9%;
-      --foreground: 0 0% 98%;
-
-      --card: 0 0% 3.9%;
-      --card-foreground: 0 0% 98%;
-
-      --popover: 0 0% 3.9%;
-      --popover-foreground: 0 0% 98%;
-
-      --primary: 0 0% 98%;
-      --primary-foreground: 0 0% 9%;
-
-      --secondary: 0 0% 14.9%;
-      --secondary-foreground: 0 0% 98%;
-
-      --muted: 0 0% 14.9%;
-      --muted-foreground: 0 0% 63.9%;
-
-      --accent: 0 0% 14.9%;
-      --accent-foreground: 0 0% 98%;
-
-      --destructive: 0 62.8% 30.6%;
-      --destructive-foreground: 0 0% 98%;
-
-      --border: 0 0% 14.9%;
-      --input: 0 0% 14.9%;
-      --ring: 0 0% 83.1%;
-    }
+    --radius: 0.75rem;
   }
 
-  @layer base {
-    * {
-      @apply border-border;
-    }
-    body {
-      @apply bg-background text-foreground;
-    }
+  .dark {
+    --background: 260 30% 5%;
+    --foreground: 260 20% 98%;
+
+    --card: 260 30% 8%;
+    --card-foreground: 260 20% 98%;
+
+    --popover: 260 30% 8%;
+    --popover-foreground: 260 20% 98%;
+
+    --primary: 260 60% 50%;
+    --primary-foreground: 260 10% 98%;
+
+    --secondary: 180 60% 40%;
+    --secondary-foreground: 180 10% 98%;
+
+    --muted: 260 20% 15%;
+    --muted-foreground: 260 20% 65%;
+
+    --accent: 330 70% 45%;
+    --accent-foreground: 330 10% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 260 30% 20%;
+    --input: 260 30% 20%;
+    --ring: 260 60% 50%;
   }
+}
+
+/* Animation classes for scroll reveal */
+@layer utilities {
+  .animate-fade-up {
+    animation: fade-up 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-down {
+    animation: fade-down 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.5s ease-out forwards;
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  .animate-slide-in-right {
+    animation: slide-in-right 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateX(50px);
+  }
+
+  .animate-slide-in-left {
+    animation: slide-in-left 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+
+  .delay-100 {
+    animation-delay: 100ms;
+  }
+
+  .delay-200 {
+    animation-delay: 200ms;
+  }
+
+  .delay-300 {
+    animation-delay: 300ms;
+  }
+
+  .delay-400 {
+    animation-delay: 400ms;
+  }
+
+  .delay-500 {
+    animation-delay: 500ms;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Gradient backgrounds */
+.bg-gradient-primary {
+  background: linear-gradient(135deg, hsl(260, 60%, 45%), hsl(280, 60%, 40%));
+}
+
+.bg-gradient-secondary {
+  background: linear-gradient(135deg, hsl(180, 60%, 45%), hsl(200, 60%, 40%));
+}
+
+.bg-gradient-accent {
+  background: linear-gradient(135deg, hsl(330, 80%, 50%), hsl(350, 80%, 45%));
+}
+
+.bg-gradient-dark {
+  background: linear-gradient(135deg, hsl(260, 30%, 10%), hsl(280, 30%, 5%));
+}
+
+/* Glass morphism effect */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.dark .glass {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Animated background */
+.animated-bg {
+  position: relative;
+  overflow: hidden;
+}
+
+.animated-bg::before {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+  animation: rotate 20s linear infinite;
+  z-index: 0;
+}
+
+.dark .animated-bg::before {
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground transition-colors duration-300;
+  }
+}

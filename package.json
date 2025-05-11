@@ -11,12 +11,12 @@
     "db:studio": "npx drizzle-kit studio"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.1.5",
+    "@clerk/nextjs": "^5.7.5",
     "@clerk/themes": "^2.1.9",
     "@google/generative-ai": "^0.13.0",
     "@hookform/resolvers": "^3.7.0",
     "@material-tailwind/react": "^2.1.9",
-    "@neondatabase/serverless": "^0.9.3",
+    "@neondatabase/serverless": "^0.9.5",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-collapsible": "^1.1.0",
     "@radix-ui/react-dialog": "^1.0.5",
@@ -25,7 +25,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "drizzle-orm": "^0.31.2",
+    "drizzle-orm": "^0.31.4",
     "framer-motion": "^11.2.12",
     "lucide-react": "^0.395.0",
     "mini-svg-data-uri": "^1.4.4",
@@ -48,7 +48,7 @@
   },
   "devDependencies": {
     "@types/react": "18.3.3",
-    "drizzle-kit": "^0.22.7",
+    "drizzle-kit": "^0.22.8",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "5.5.3"
