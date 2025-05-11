@@ -91,7 +91,7 @@ const Feedback = ({ params }) => {
                       <strong>Correct Answer: </strong>
                       {item.correctAns}
                     </h2>
-                    <h2 className="p-2 border rounded-lg bg-blue-50 text-sm text-primary-900">
+                    <h2 className="p-2 border rounded-lg bg-blue-50 text-sm text-black">
                       <strong>Feedback: </strong>
                       {item.feedback}
                     </h2>
