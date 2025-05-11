@@ -109,6 +109,8 @@ Ensure all env variables are securely added to the production environment
 
 📈 Analytics Dashboard for Admins & Users
 
+🧑‍💻 Coding Interview support
+
 ## How to Contribute
 
 1. Fork this repo & clone your fork locally.  
