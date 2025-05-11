@@ -1,6 +1,6 @@
-# AI-Powered Tech Interview SaaS Platform
+# AI-Powered Interview SaaS Platform
 
-An end-to-end technical interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB**, and **Clerk** for authentication. Designed to streamline and simulate real-world tech interviews with dynamic question generation, feedback mechanisms, and recording features.
+An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB**, and **Clerk** for authentication. Designed to streamline and simulate real-world tech interviews with dynamic question generation, feedback mechanisms, and recording features.
 
 ---
 
