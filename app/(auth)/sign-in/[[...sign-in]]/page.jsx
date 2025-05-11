@@ -27,11 +27,11 @@ export default function Page() {
               </svg>
             </a>
 
-            <h2 className="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl">
+            <h2 className="mt-6 text-2xl font-bold text-black sm:text-3xl md:text-4xl">
               Welcome to InterviewAI
             </h2>
 
-            <p className="mt-4 leading-relaxed text-white/90">
+            <p className="mt-4 leading-relaxed text-black">
               A platform to help you prepare for your next job interview. We
               provide a realistic mock interview experience with AI-generated
               questions and feedback. 
@@ -60,11 +60,11 @@ export default function Page() {
                 </svg>
               </a>
 
-              <h1 className="mt-2 text-2xl font-bold text-gray-900 sm:text-3xl md:text-4xl dark:text-white">
+              <h1 className="mt-2 text-2xl font-bold text-black sm:text-3xl md:text-4xl">
                 Welcome!
               </h1>
 
-              <p className="mt-4 leading-relaxed text-gray-500 dark:text-gray-400">
+              <p className="mt-4 leading-relaxed text-black">
                 Our goal is to help you improve your
               interview skills and increase your chances of landing your dream
               job.
