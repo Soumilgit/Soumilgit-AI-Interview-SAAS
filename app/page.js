@@ -2,6 +2,7 @@
 import { useEffect } from "react"
 import Head from "next/head"
 import Contect from "./_components/Contect"
+import { Analytics } from "@vercel/analytics/next"
 import { FaGithub } from "react-icons/fa"
 import { ModeToggle } from "@/components/ModeToggle"
 import { ArrowDown, ArrowRight, CheckCircle, Code, Cpu, MessageSquare, Sparkles, Star, Users } from "lucide-react"
@@ -386,6 +387,7 @@ const page = () => {
           </div>
         </div>
       </footer>
+      <Analytics />
     </div>
   )
 }
