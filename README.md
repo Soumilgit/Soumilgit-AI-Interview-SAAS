@@ -13,7 +13,7 @@ An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI
 -  **Dashboard** to Manage Interviews, Questions & Progress
 -  **Stripe Payments** (USD Supported)
 -  **Fully Dockerized** for Deployment
--  Built with **React**, **TailwindCSS**, **Next.js App Router**
+-  Built with **React**, **TailwindCSS** and **Next.js App Router**
 
 ---
 
