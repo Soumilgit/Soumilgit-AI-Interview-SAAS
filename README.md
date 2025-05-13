@@ -70,7 +70,7 @@ root
 
 ---
 
-## Stripe payment gateway testing success demo with dummy values
+## Stripe Test Checkout Flow
 
 [Test mode payment demo](https://github.com/user-attachments/assets/3624f089-3f28-4501-ba86-fc7d70aa4645)
 
