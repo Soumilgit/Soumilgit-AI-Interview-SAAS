@@ -71,8 +71,7 @@ root
 ---
 
 ## Stripe Test Checkout Flow
-
-[Test mode payment demo](https://github.com/user-attachments/assets/3624f089-3f28-4501-ba86-fc7d70aa4645)
+[Dummy value testing](https://github.com/user-attachments/assets/4f317dad-0618-40ad-8e3f-5c66bed488b8)
 
 ---
 
