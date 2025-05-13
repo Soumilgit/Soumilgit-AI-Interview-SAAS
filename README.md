@@ -1,4 +1,4 @@
-[screen-recording (16).webm](https://github.com/user-attachments/assets/b1f9e263-3df0-4b35-8888-bd61ffe44ffa)# AI-Powered Interview SaaS Platform
+# AI-Powered Interview SaaS Platform
 
 An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB**, and **Clerk** for authentication. Designed to streamline and simulate real-world tech interviews with dynamic question generation, feedback mechanisms, and recording features.
 
