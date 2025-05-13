@@ -1,4 +1,4 @@
-# AI-Powered Interview SaaS Platform
+[screen-recording (16).webm](https://github.com/user-attachments/assets/b1f9e263-3df0-4b35-8888-bd61ffe44ffa)# AI-Powered Interview SaaS Platform
 
 An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB**, and **Clerk** for authentication. Designed to streamline and simulate real-world tech interviews with dynamic question generation, feedback mechanisms, and recording features.
 
@@ -67,6 +67,14 @@ root
 ![Newsletter](https://github.com/user-attachments/assets/9cd03593-3d30-4403-b23b-e5373e252c8a)
 ![Question](https://github.com/user-attachments/assets/f286e3ba-e19f-4139-8e8e-1c055e5de8c9)
 ![User Answer](https://github.com/user-attachments/assets/5d4ea303-7c44-4c9c-8a44-1476212beb07)
+
+---
+
+## Stripe payment gateway testing success demo with dummy values
+
+[screen-recording (16).webm](https://github.com/user-attachments/assets/3624f089-3f28-4501-ba86-fc7d70aa4645)
+
+---
 
 ## Local Development
 
