@@ -61,7 +61,9 @@ root
 ![Clerk admin dashboard](https://github.com/user-attachments/assets/46354ade-e40d-46a7-9352-45d4e906b0e3)
 
 **2.NeonDB(all 4 tables)**
-{Note: As this is a demo so far, all entries currently reflect activity from my own testing accounts.}
+<p>
+<br>Note: As this is a demo so far, all entries currently reflect activity from my own testing accounts.</br>
+</p>
 ![Mock Interview](https://github.com/user-attachments/assets/990ae306-4128-41d2-a235-af8e4c52276b)
 ![Newsletter](https://github.com/user-attachments/assets/9cd03593-3d30-4403-b23b-e5373e252c8a)
 ![Question](https://github.com/user-attachments/assets/f286e3ba-e19f-4139-8e8e-1c055e5de8c9)
