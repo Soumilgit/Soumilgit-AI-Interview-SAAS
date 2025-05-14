@@ -71,7 +71,7 @@ root
 ---
 
 ## Stripe Test Checkout Flow
-[Dummy value testing](https://github.com/user-attachments/assets/4f317dad-0618-40ad-8e3f-5c66bed488b8)
+https://github.com/user-attachments/assets/2a9ffc74-56d0-4e00-9703-9e4e310d1c75
 
 ---
 
