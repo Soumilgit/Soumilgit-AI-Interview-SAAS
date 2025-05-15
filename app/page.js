@@ -58,26 +58,16 @@ const page = () => {
             </div>
             <nav className="flex flex-col sm:flex-row flex-wrap items-center justify-between mt-4 md:mt-0 space-y-4 sm:space-y-0 sm:space-x-6">
               <div className="flex items-center space-x-4">
-                <iframe
-                  src="https://github.com/sponsors/Soumilgit/button"
-                  title="Sponsor Soumil on GitHub"
-                  height="32"
-                  width="114"
-                  className="border-0 rounded-lg"
-                ></iframe>
+               <a target="_blank" rel="noopener noreferrer" href="https://github.com/sponsors/Soumilgit" className="inline-block">
+              <iframe src="https://github.com/sponsors/Soumilgit/button" title="Sponsor Soumil on GitHub" height="32" width="114" className="border-0 rounded-lg"></iframe>
+              </a>
 
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/Soumilgit"
-                  className="inline-block relative group"
-                >
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
-                  <FaGithub className="relative text-foreground hover:text-primary transition-colors w-7 h-7" />
-                </a>
-
-                <ModeToggle />
-              </div>
+            <a target="_blank" rel="noopener noreferrer" href="https://github.com/Soumilgit" className="inline-block relative group">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
+            <FaGithub className="relative text-foreground hover:text-primary transition-colors w-7 h-7" />
+           </a>
+          <ModeToggle />
+          </div>
 
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
                 <a
