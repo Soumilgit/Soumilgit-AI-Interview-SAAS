@@ -2,7 +2,7 @@
 import { useEffect } from "react"
 import Head from "next/head"
 import Contect from "./_components/Contect"
-import { FaGithub } from "react-icons/fa"
+import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
 import { ModeToggle } from "@/components/ModeToggle"
 import { ArrowDown, ArrowRight, CheckCircle, Code, Cpu, MessageSquare, Sparkles, Star, Users } from "lucide-react"
 
@@ -386,6 +386,30 @@ const page = () => {
                   className="text-white/80 hover:text-white transition-colors"
                 >
                   <FaGithub className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/soumilm30/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  <FaLinkedin className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://www.instagram.com/soumil_m.exe/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  <FaInstagram className="w-6 h-6" />
+                </a>
+                <a
+                  href="https://twitter.com/SoumilMukh6476/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-white/80 hover:text-white transition-colors"
+                >
+                  <FaTwitter className="w-6 h-6" />
                 </a>
               </div>
             </div>
