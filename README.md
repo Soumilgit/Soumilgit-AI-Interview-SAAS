@@ -6,7 +6,7 @@ An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI
 
 # SAAS Cloud Architecture
 
-![image](https://github.com/user-attachments/assets/2726944e-2a62-47ce-90e7-cd94fd319ee8)
+![image](https://github.com/user-attachments/assets/e3cb2ee2-f0d0-430f-af16-17900b5a21cb)
 
 ---
 
