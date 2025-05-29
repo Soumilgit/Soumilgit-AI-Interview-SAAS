@@ -4,6 +4,12 @@ An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI
 
 ---
 
+# SAAS Cloud Architecture
+
+![image](https://github.com/user-attachments/assets/048a9f9a-325d-4a5b-9524-b63ecaffd0ea)
+
+---
+
 ##  Features
 
 -  **Authentication** with [Clerk.dev](https://clerk.dev)
