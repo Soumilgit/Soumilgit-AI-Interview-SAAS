@@ -124,7 +124,7 @@ Ensure all env variables are securely added to the production environment
 
 ---
 
-## Future Enhancements
+## Future Enhancements, currently omitted due to UX considerations
 🎯 Full-screen Interview Mode
 
 🚫 Tab-Switch Detection & Blocking
