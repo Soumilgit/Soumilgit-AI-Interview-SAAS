@@ -1,10 +1,10 @@
-# AI-Powered Interview SaaS Platform
+# SimulateRecruitAI - AI Interview Mocker
 
-An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB**, and **Clerk** for authentication. Designed to streamline and simulate real-world interviews with dynamic question generation, feedback mechanisms and recording features.
+An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB** and **Clerk** for authentication. Designed to streamline & simulate real-world interviews with dynamic question generation, feedback mechanisms & recording features.
 
 ---
 
-# SAAS Cloud Architecture
+# Architecture
 
 ![image](https://github.com/user-attachments/assets/e3cb2ee2-f0d0-430f-af16-17900b5a21cb)
 
@@ -12,12 +12,12 @@ An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI
 
 ##  Features
 
--  **Authentication** with [Clerk.dev](https://clerk.dev)
+-  **Authentication** with Clerk
 -  **AI-Driven** Interview Generation & Feedback (via Gemini AI)
 -  **Custom Questions** and Interview Creation
 -  **Interview Simulation**: Question + Record Answer + AI Feedback
 -  **Dashboard** to Manage Interviews, Questions & Progress
--  **Stripe Payments** (USD Supported)
+-  **Stripe Payments** Payment Gateway
 -  **Fully Dockerized** for Deployment
 -  Built with **React**, **TailwindCSS** and **Next.js App Router**
 
@@ -28,9 +28,9 @@ An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI
 | Purpose              | Tech                      |
 |----------------------|---------------------------|
 | Frontend Framework   | Next.js+React (App Router)|
-| Styling              | TailwindCSS               |
+| Styling              | TailWindCSS               |
 | Component System     | Custom + ShadCN UI        |
-| Authentication       | Clerk.dev                 |
+| Authentication       | Clerk                     |
 | Database             | Neon (Postgres) + Drizzle |
 | AI Integration       | Gemini AI (Google)        |
 | Payments             | Stripe (USD only)         |
@@ -64,15 +64,15 @@ root
 ## Admin Panel, DB & Backend Logs
 
 **1.Clerk**
-![Clerk admin dashboard](https://github.com/user-attachments/assets/46354ade-e40d-46a7-9352-45d4e906b0e3)
 
-**2.NeonDB(all 4 tables)**
-<br>Note: As this is a demo so far, all entries currently reflect activity from my own testing accounts.</br>
+![Clerk admin dashboard](https://github.com/user-attachments/assets/f1e1ed25-d118-4c6b-9331-9c8a811addbe)
 
-![Mock Interview](https://github.com/user-attachments/assets/990ae306-4128-41d2-a235-af8e4c52276b)
-![Newsletter](https://github.com/user-attachments/assets/9cd03593-3d30-4403-b23b-e5373e252c8a)
-![Question](https://github.com/user-attachments/assets/f286e3ba-e19f-4139-8e8e-1c055e5de8c9)
-![User Answer](https://github.com/user-attachments/assets/5d4ea303-7c44-4c9c-8a44-1476212beb07)
+**2.NeonDB (all 4 tables)**
+
+![Mock Interview](https://github.com/user-attachments/assets/2b04bff8-caae-4858-9131-49d9e6a52836)
+![Newsletter](https://github.com/user-attachments/assets/6b8b59e1-7f47-4c1c-b9bd-049780010f1e)
+![Question](https://github.com/user-attachments/assets/7bfdb30f-141c-47f3-9721-c295e10ad104)
+![User Answer](https://github.com/user-attachments/assets/1ee420ae-e489-4903-9de2-195aab059251)
 
 ---
 
@@ -91,7 +91,7 @@ npm install
 ```
 
 **2. Configure Environment Variables**
-Create a .env.local file:
+Create a `.env.local` file:
 ```bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
 CLERK_SECRET_KEY=
@@ -118,26 +118,24 @@ docker compose up --build
 ---
 
 ## Production Deployment
-Use platforms like **Vercel**, **Render**, **Railway**, or **Docker-based VPS**
+Use platforms like **Vercel**, **Render**, **Railway** or **Docker-based VPS** .
 
-Ensure all env variables are securely added to the production environment
+Securely add `.env.local` variables & `drizzle.config.js` to production environment
 
 ---
 
-## Future Enhancements, currently omitted due to UX considerations
+## Future Scope
 🎯 Full-screen Interview Mode
 
 🚫 Tab-Switch Detection & Blocking
 
 🎧 Real-Time Proctoring Tools
 
-🌍 Multi-currency Stripe Support
-
 📈 Analytics Dashboard for Admins & Users
 
 🧑‍💻 Coding Interview support
 
-## How to Contribute
+## How To Contribute
 
 1. Fork this repo & clone your fork locally.  
 2. Create a new branch: `git checkout -b your-feature-name`  
