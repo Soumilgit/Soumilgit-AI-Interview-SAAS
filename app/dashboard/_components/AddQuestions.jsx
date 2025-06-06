@@ -6,7 +6,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -44,14 +43,39 @@ const AddQuestions = () => {
     setLoading(true);
     
     try {
-      const InputPrompt = `Generate 5 interview questions with answers in JSON format for:
-      - Job Position: ${formData.jobPosition}
-      - Job Description: ${formData.jobDesc}
-      - Years of Experience: ${formData.jobExperience}
-      - Question Type: ${formData.typeQuestion}
-      - Target Company: ${formData.company}
-      
-      Return only valid JSON with "questions" array containing objects with "Question" and "Answer" fields.`;
+      const InputPrompt = `You are an expert interview coach creating practice questions.
+
+Generate 5 interview questions with well-structured, clean answers in JSON format for:
+- Job Position: ${formData.jobPosition}
+- Job Description: ${formData.jobDesc}
+- Years of Experience: ${formData.jobExperience}
+- Question Type: ${formData.typeQuestion}
+- Target Company: ${formData.company}
+
+IMPORTANT FORMATTING GUIDELINES FOR ANSWERS:
+1. Keep answers concise, clear, and professional (3-5 short paragraphs maximum)
+2. Use proper paragraph breaks for readability
+3. Structure answers with:
+   - Brief introduction/definition (if applicable)
+   - Key points or steps (numbered or bulleted conceptually in text)
+   - Practical example or use case (if relevant)
+   - Brief conclusion or best practice
+4. Avoid lengthy explanations - focus on actionable, interview-appropriate responses
+5. Use clean, readable text without excessive formatting markers
+6. Write in a conversational yet professional tone
+7. Each answer should be interview-ready (what a candidate would say in 2-3 minutes)
+
+Return output as pure JSON only with this exact structure:
+{
+  "questions": [
+    {
+      "Question": "Your question here?",
+      "Answer": "Well-structured, clean answer with proper paragraph breaks and concise explanations"
+    }
+  ]
+}
+
+Do not include any markdown formatting, code blocks, or extra characters. Return only valid JSON.`;
 
       const result = await chatSession.sendMessage(InputPrompt);
       const responseText = result.response.text();
@@ -82,6 +106,7 @@ const AddQuestions = () => {
         typeQuestion: formData.typeQuestion,
         company: formData.company,
         createdBy: user?.primaryEmailAddress?.emailAddress,
+        createdAt: moment().format("YYYY-MM-DD"),
       })
       .returning({ mockId: Question.mockId });
 
