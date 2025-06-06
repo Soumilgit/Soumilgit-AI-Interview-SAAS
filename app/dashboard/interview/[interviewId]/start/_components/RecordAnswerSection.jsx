@@ -70,7 +70,7 @@ const RecordAnswerSection = ({
   const transcribeAudio = async (audioBlob) => {
     try {
       setLoading(true);
-      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
       
       // Convert audio blob to base64
       const reader = new FileReader();
@@ -98,13 +98,17 @@ const RecordAnswerSection = ({
     try {
       setLoading(true);
       const feedbackPrompt =
-        "Question:" +
-        mockInterviewQuestion[activeQuestionIndex]?.Question +
-        ", User Answer:" +
-        userAnswer +
-        " , Depends on question and user answer for given interview question" +
-        " please give us rating for answer and feedback as area of improvement if any " +
-        "in just 3 to 5 lines to improve it in JSON format with rating field and feedback field";
+  "You are an expert interview evaluator. " +
+  "Evaluate the user's answer strictly on a numeric scale from 1 to 10 (integers only). " +
+  "Each question carries 2 points toward the overall interview score, so rate accordingly. " +
+  "Return output in pure JSON only, with exactly two fields: " +
+  '{"rating": <integer between 1 and 10>, "feedback": "<short constructive feedback in 3-5 lines>"} ' +
+  "Do not use words like Good, Fair, or Poor for rating. " +
+  "Keep feedback short, specific, and actionable. " +
+  "Question: " + mockInterviewQuestion[activeQuestionIndex]?.Question +
+  " , User Answer: " + userAnswer +
+  " , Correct Answer: " + mockInterviewQuestion[activeQuestionIndex]?.Answer;
+
 
       const result = await chatSession.sendMessage(feedbackPrompt);
 
@@ -132,7 +136,7 @@ const RecordAnswerSection = ({
       });
 
       if (resp) {
-        toast("User Answer recorded successfully");
+        toast("Answer & feedback saved ✅");
       }
       setUserAnswer("");
       setLoading(false);

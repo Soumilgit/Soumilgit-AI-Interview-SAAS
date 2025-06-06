@@ -2,9 +2,27 @@
 import { useEffect } from "react"
 import Head from "next/head"
 import Contect from "./_components/Contect"
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
+import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa"
 import { ModeToggle } from "@/components/ModeToggle"
 import { ArrowDown, ArrowRight, CheckCircle, Code, Cpu, MessageSquare, Sparkles, Star, Users } from "lucide-react"
+
+const socialLinks = {
+  github: "https://github.com/Soumilgit",
+  linkedin: "https://www.linkedin.com/in/soumilm30/",
+  instagram: "https://www.instagram.com/soumil_m.exe/",
+  twitterWeb: "https://twitter.com/SoumilMukh6476",
+  twitterApp: "twitter://user?screen_name=SoumilMukh6476",
+};
+
+const openAppOrFallback = (appLink, webLink) => {
+  const timeout = setTimeout(() => {
+    window.open(webLink, "_blank");
+  }, 300);
+
+  window.location.href = appLink;
+
+  window.addEventListener("blur", () => clearTimeout(timeout), { once: true });
+};
 
 const page = () => {
   // Intersection Observer setup
@@ -39,7 +57,7 @@ const page = () => {
   return (
     <div className="min-h-screen bg-background relative animated-bg">
       <Head>
-        <title>InterviewAI</title>
+        <title>SimulateRecruitAI</title>
         <meta name="description" content="Ace your next interview with AI-powered mock interviews" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -52,41 +70,32 @@ const page = () => {
               <div className="relative">
                 <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
                 <h1 className="relative text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                  InterviewAI
+                  SimulateRecruitAI
                 </h1>
               </div>
             </div>
             <nav className="flex flex-col sm:flex-row flex-wrap items-center justify-between mt-4 md:mt-0 space-y-4 sm:space-y-0 sm:space-x-6">
               <div className="flex items-center space-x-4">
-  <div className="relative group">
-    <a
-      target="_blank"
-      rel="noopener noreferrer"
-      href="https://github.com/sponsors/Soumilgit"
-      className="absolute inset-0 z-10"
-      aria-label="Sponsor Soumil on GitHub"
-    ></a>
-    <iframe
-      src="https://github.com/sponsors/Soumilgit/button"
-      title="Sponsor Soumil on GitHub"
-      height="32"
-      width="114"
-      className="border-0 rounded-lg relative"
-    ></iframe>
-  </div>
+                <iframe
+                  src="https://github.com/sponsors/Soumilgit/button"
+                  title="Sponsor Soumil on GitHub"
+                  height="32"
+                  width="114"
+                  className="border-0 rounded-lg"
+                ></iframe>
 
-  <a
-    target="_blank"
-    rel="noopener noreferrer"
-    href="https://github.com/Soumilgit"
-    className="inline-block relative group"
-  >
-    <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
-    <FaGithub className="relative text-foreground hover:text-primary transition-colors w-7 h-7" />
-  </a>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href="https://github.com/Soumilgit"
+                  className="inline-block relative group"
+                >
+                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
+                  <FaGithub className="relative text-foreground hover:text-primary transition-colors w-7 h-7" />
+                </a>
 
-  <ModeToggle />
-</div>
+                <ModeToggle />
+              </div>
 
               <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
                 <a
@@ -351,7 +360,7 @@ const page = () => {
         <div className="container mx-auto px-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <div className="text-left">
-              <h3 className="text-xl font-bold mb-4">InterviewAI</h3>
+              <h3 className="text-xl font-bold mb-4">SimulateRecruitAI</h3>
               <p className="text-white/80">
                 Ace your next interview with AI-powered mock interviews and personalized feedback.
               </p>
@@ -377,45 +386,48 @@ const page = () => {
               </ul>
             </div>
             <div className="text-left">
-              <h3 className="text-xl font-bold mb-4">Connect</h3>
-              <div className="flex space-x-4">
-                <a
-                  href="https://github.com/Soumilgit"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  <FaGithub className="w-6 h-6" />
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/soumilm30/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  <FaLinkedin className="w-6 h-6" />
-                </a>
-                <a
-                  href="https://www.instagram.com/soumil_m.exe/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  <FaInstagram className="w-6 h-6" />
-                </a>
-                <a
-                  href="https://twitter.com/SoumilMukh6476/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-white/80 hover:text-white transition-colors"
-                >
-                  <FaTwitter className="w-6 h-6" />
-                </a>
+                <h3 className="text-xl font-bold mb-4">Connect</h3>
+                <div className="flex space-x-4">
+                  <a
+                    href={socialLinks.github}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/80 hover:text-white"
+                  >
+                    <FaGithub className="w-6 h-6" />
+                  </a>
+                  <a
+                    href={socialLinks.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/80 hover:text-white"
+                  >
+                    <FaLinkedin className="w-6 h-6" />
+                  </a>
+                  <a
+                    href={socialLinks.instagram}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-white/80 hover:text-white"
+                  >
+                    <FaInstagram className="w-6 h-6" />
+                  </a>
+                  <button
+                    onClick={() =>
+                      openAppOrFallback(
+                        socialLinks.twitterApp,
+                        socialLinks.twitterWeb
+                      )
+                    }
+                    className="text-white/80 hover:text-white"
+                  >
+                    <FaTwitter className="w-6 h-6" />
+                  </button>
+                </div>
               </div>
-            </div>
           </div>
           <div className="pt-8 border-t border-white/20">
-            <p className="text-white/80">© {new Date().getFullYear()} InterviewAI. All rights reserved.</p>
+            <p className="text-white/80">© {new Date().getFullYear()} SimulateRecruitAI. All rights reserved.</p>
           </div>
         </div>
       </footer>
