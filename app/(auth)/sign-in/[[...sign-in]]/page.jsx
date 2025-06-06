@@ -29,7 +29,7 @@ export default function Page() {
 
             <div className="mt-6 bg-black p-6 rounded-lg">
     <h2 className="text-2xl font-bold text-white sm:text-3xl md:text-4xl">
-      Welcome to InterviewAI
+      Welcome to SimulateRecruitAI
     </h2>
 
     <p className="mt-4 leading-relaxed text-white">
