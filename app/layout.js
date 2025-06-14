@@ -8,7 +8,7 @@ import Script from "next/script"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "InterviewAI - Ace Your Next Interview",
+  title: "SimulateRecruitAI - Ace Your Next Interview",
   description: "Practice with AI-powered mock interviews and get personalized feedback",
 }
 
