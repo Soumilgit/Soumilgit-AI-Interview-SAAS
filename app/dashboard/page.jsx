@@ -9,7 +9,7 @@ const Dashboard = () => {
       <div className="flex justify-between items-center mb-8">
         <div>
           <h2 className="font-bold text-3xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">
-            InterviewAI
+            SimulateRecruitAI
           </h2>
           <h2 className="text-muted-foreground">
             Create and start your AI Mock Interview
