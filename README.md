@@ -1,4 +1,4 @@
-# SimulateRecruitAI - AI Interview Mocker
+# SimulateRecruitAI - Your AI Interview Mocker
 
 An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB** and **Clerk** for authentication. Designed to streamline & simulate real-world interviews with dynamic question generation, feedback mechanisms & recording features.
 
@@ -65,7 +65,7 @@ root
 
 **1.Clerk**
 
-![Clerk admin dashboard](https://github.com/user-attachments/assets/f1e1ed25-d118-4c6b-9331-9c8a811addbe)
+![Clerk admin dashboard](https://github.com/user-attachments/assets/447e9770-a253-41fe-85a7-e6af35c83f68)
 
 **2.NeonDB (all 4 tables)**
 
@@ -125,15 +125,15 @@ Securely add `.env.local` variables & `drizzle.config.js` to production environm
 ---
 
 ## Future Scope
-🎯 Full-screen Interview Mode
+- Full-screen Interview Mode
 
-🚫 Tab-Switch Detection & Blocking
+- Tab-Switch Detection & Blocking
 
-🎧 Real-Time Proctoring Tools
+- Real-Time Proctoring Tools
 
-📈 Analytics Dashboard for Admins & Users
+- Analytics Dashboard for Admins & Users
 
-🧑‍💻 Coding Interview support
+- Coding Interview support
 
 ## How To Contribute
 
@@ -141,4 +141,4 @@ Securely add `.env.local` variables & `drizzle.config.js` to production environm
 2. Create a new branch: `git checkout -b your-feature-name`  
 3. Make changes, test locally, then commit: `git commit -m "your message"`  
 4. Push to your fork: `git push origin your-feature-name`  
-5. Open a Pull Request — I’ll take it from there 😊.  
+5. Open a Pull Request — I’ll take it from there.  
