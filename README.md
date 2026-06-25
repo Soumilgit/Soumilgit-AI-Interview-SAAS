@@ -69,8 +69,8 @@ root
 
 **2.NeonDB (all 4 tables)**
 
-![Mock Interview](https://github.com/user-attachments/assets/2b04bff8-caae-4858-9131-49d9e6a52836)
-![Newsletter](https://github.com/user-attachments/assets/6b8b59e1-7f47-4c1c-b9bd-049780010f1e)
+[Mock Interview](https://github.com/user-attachments/assets/d8d99fef-a377-4aeb-8d40-023efa1faa36)
+[Newsletter](https://github.com/user-attachments/assets/b7752441-daa2-4186-bcec-22a57b4fdd2e)
 ![Question](https://github.com/user-attachments/assets/7bfdb30f-141c-47f3-9721-c295e10ad104)
 ![User Answer](https://github.com/user-attachments/assets/1ee420ae-e489-4903-9de2-195aab059251)
 
@@ -123,17 +123,6 @@ Use platforms like **Vercel**, **Render**, **Railway** or **Docker-based VPS** .
 Securely add `.env.local` variables & `drizzle.config.js` to production environment
 
 ---
-
-## Future Scope
-- Full-screen Interview Mode
-
-- Tab-Switch Detection & Blocking
-
-- Real-Time Proctoring Tools
-
-- Analytics Dashboard for Admins & Users
-
-- Coding Interview support
 
 ## How To Contribute
 
