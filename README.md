@@ -69,8 +69,8 @@ root
 
 **2.NeonDB (all 4 tables)**
 
-[Mock Interview](https://github.com/user-attachments/assets/d8d99fef-a377-4aeb-8d40-023efa1faa36)
-[Newsletter](https://github.com/user-attachments/assets/b7752441-daa2-4186-bcec-22a57b4fdd2e)
+![Mock Interview](https://github.com/user-attachments/assets/d8d99fef-a377-4aeb-8d40-023efa1faa36)
+![Newsletter](https://github.com/user-attachments/assets/b7752441-daa2-4186-bcec-22a57b4fdd2e)
 ![Question](https://github.com/user-attachments/assets/7bfdb30f-141c-47f3-9721-c295e10ad104)
 ![User Answer](https://github.com/user-attachments/assets/1ee420ae-e489-4903-9de2-195aab059251)
 
