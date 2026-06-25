@@ -65,7 +65,8 @@ root
 
 **1.Clerk**
 
-![Clerk admin dashboard](https://github.com/user-attachments/assets/447e9770-a253-41fe-85a7-e6af35c83f68)
+![Clerk admin dashboard](https://github.com/user-attachments/assets/1ce19d50-0002-4ea0-8379-16b3d105db91)
+
 
 **2.NeonDB (all 4 tables)**
 
