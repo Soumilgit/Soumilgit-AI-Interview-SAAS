@@ -1,17 +1,19 @@
 import { db } from "@/utils/db";
 import { Question } from "@/utils/schema";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { chatSession } from "@/utils/GeminiAIModal";
 import { NextResponse } from "next/server";
+import { getAuthenticatedEmail } from "@/utils/server-user";
 
 export async function POST(req) {
   try {
-    const { mockId, userEmail } = await req.json();
+    const { mockId } = await req.json();
+    const userEmail = await getAuthenticatedEmail();
 
     if (!mockId || !userEmail) {
       return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
+        { error: userEmail ? "Missing required fields" : "Unauthorized" },
+        { status: userEmail ? 400 : 401 }
       );
     }
 
@@ -19,7 +21,7 @@ export async function POST(req) {
     const result = await db
       .select()
       .from(Question)
-      .where(eq(Question.mockId, mockId));
+      .where(and(eq(Question.mockId, mockId), eq(Question.createdBy, userEmail)));
 
     if (!result || result.length === 0) {
       return NextResponse.json(
@@ -29,14 +31,6 @@ export async function POST(req) {
     }
 
     const questionData = result[0];
-    
-    // Verify ownership
-    if (questionData.createdBy !== userEmail) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 403 }
-      );
-    }
 
     const existingQuestions = JSON.parse(questionData.mockQuestionJsonResp);
 
@@ -101,7 +95,7 @@ Return only valid JSON without any code blocks or markdown.`;
       .set({
         mockQuestionJsonResp: JSON.stringify(reformattedData),
       })
-      .where(eq(Question.mockId, mockId));
+      .where(and(eq(Question.mockId, mockId), eq(Question.createdBy, userEmail)));
 
     return NextResponse.json({
       success: true,

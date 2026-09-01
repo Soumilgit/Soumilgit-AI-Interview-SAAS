@@ -186,21 +186,53 @@
   }
 }
 
-/* Gradient backgrounds */
-.bg-gradient-primary {
-  background: linear-gradient(135deg, hsl(260, 60%, 45%), hsl(280, 60%, 40%));
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
 }
 
-.bg-gradient-secondary {
-  background: linear-gradient(135deg, hsl(180, 60%, 45%), hsl(200, 60%, 40%));
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
 }
 
-.bg-gradient-accent {
-  background: linear-gradient(135deg, hsl(330, 80%, 50%), hsl(350, 80%, 45%));
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
-.bg-gradient-dark {
-  background: linear-gradient(135deg, hsl(260, 30%, 10%), hsl(280, 30%, 5%));
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+
+  .delay-600 {
+    animation-delay: 600ms;
+  }
+
+  .delay-1000 {
+    animation-delay: 1000ms;
+  }
+
+  .perspective {
+    perspective: 1000px;
+  }
 }
 
 /* Glass morphism effect */
@@ -216,40 +248,10 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Animated background */
-.animated-bg {
-  position: relative;
-  overflow: hidden;
-}
-
-.animated-bg::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
-  animation: rotate 20s linear infinite;
-  z-index: 0;
-}
-
-.dark .animated-bg::before {
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 70%);
-}
-
-@keyframes rotate {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
+/* Smooth transitions for all elements */
 @layer base {
   * {
-    @apply border-border;
+    @apply border-border transition-colors duration-300;
   }
   body {
     @apply bg-background text-foreground transition-colors duration-300;

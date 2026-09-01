@@ -1,438 +1,110 @@
 "use client"
-import { useEffect } from "react"
-import Head from "next/head"
+
+import { useEffect, useRef, useState } from "react"
+import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa"
 import Contect from "./_components/Contect"
-import { FaGithub, FaLinkedin, FaTwitter, FaInstagram } from "react-icons/fa"
 import { ModeToggle } from "@/components/ModeToggle"
-import { ArrowDown, ArrowRight, CheckCircle, Code, Cpu, MessageSquare, Sparkles, Star, Users } from "lucide-react"
 
-const socialLinks = {
-  github: "https://github.com/Soumilgit",
-  linkedin: "https://www.linkedin.com/in/soumilm30/",
-  instagram: "https://www.instagram.com/soumil_m.exe/",
-  twitterWeb: "https://twitter.com/SoumilMukh6476",
-  twitterApp: "twitter://user?screen_name=SoumilMukh6476",
-};
+const repo = "https://github.com/Soumilgit/Soumilgit-AI-Interview-SAAS"
+const socialLinks = [
+  { label: "GitHub", href: "https://github.com/Soumilgit", Icon: FaGithub },
+  { label: "LinkedIn", href: "https://www.linkedin.com/in/soumilm30/", Icon: FaLinkedin },
+  { label: "X", href: "https://twitter.com/SoumilMukh6476", Icon: FaTwitter },
+  { label: "Instagram", href: "https://www.instagram.com/soumil_m.exe/", Icon: FaInstagram },
+]
+const faqs = [
+  ["How are questions tailored?", "Choose a role and skill level. The practice session adjusts its questions to that context."],
+  ["What feedback do I receive?", "You receive feedback on structure, clarity, technical accuracy and the key points in each response."],
+  ["Can I practice more than one role?", "Create a separate practice session for every position or interview style you want to prepare for."],
+  ["Is feedback available right away?", "Your session metrics and response guidance are ready when the interview is complete."],
+  ["Can I monitor progress?", "Performance history helps you compare sessions and focus your next practice round."],
+  ["Is there a free option?", "Begin with the available free experience and upgrade when you need more practice."],
+]
 
-const openAppOrFallback = (appLink, webLink) => {
-  const timeout = setTimeout(() => {
-    window.open(webLink, "_blank");
-  }, 300);
-
-  window.location.href = appLink;
-
-  window.addEventListener("blur", () => clearTimeout(timeout), { once: true });
-};
-
-const page = () => {
-  // Intersection Observer setup
+function Reveal({ children, className = "" }) {
+  const ref = useRef(null)
+  const [visible, setVisible] = useState(false)
   useEffect(() => {
-    const animatedElements = document.querySelectorAll(".reveal-on-scroll")
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("visible")
-          }
-        })
-      },
-      {
-        threshold: 0.1,
-        rootMargin: "0px 0px -100px 0px",
-      },
-    )
-
-    animatedElements.forEach((el) => {
-      observer.observe(el)
-    })
-
-    return () => {
-      animatedElements.forEach((el) => {
-        observer.unobserve(el)
-      })
-    }
+    const node = ref.current
+    if (!node) return
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setVisible(true); observer.unobserve(node) }
+    }, { threshold: 0.12, rootMargin: "0px 0px -36px 0px" })
+    observer.observe(node)
+    return () => observer.disconnect()
   }, [])
-
-  return (
-    <div className="min-h-screen bg-background relative animated-bg">
-      <Head>
-        <title>SimulateRecruitAI</title>
-        <meta name="description" content="Ace your next interview with AI-powered mock interviews" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className="min-h-screen">
-        {/* Header Section */}
-        <header className="sticky top-0 z-50 w-full py-4 backdrop-blur-md bg-background/80 shadow-sm border-b border-primary/10 transition-all duration-300">
-          <div className="container mx-auto flex flex-col md:flex-row justify-between items-center px-6">
-            <div className="flex items-center">
-              <div className="relative">
-                <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-lg blur opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-200"></div>
-                <h1 className="relative text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                  SimulateRecruitAI
-                </h1>
-              </div>
-            </div>
-            <nav className="flex flex-col sm:flex-row flex-wrap items-center justify-between mt-4 md:mt-0 space-y-4 sm:space-y-0 sm:space-x-6">
-              <div className="flex items-center space-x-4">
-                <iframe
-                  src="https://github.com/sponsors/Soumilgit/button"
-                  title="Sponsor Soumil on GitHub"
-                  height="32"
-                  width="114"
-                  className="border-0 rounded-lg"
-                ></iframe>
-
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/Soumilgit"
-                  className="inline-block relative group"
-                >
-                  <div className="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-full blur opacity-0 group-hover:opacity-30 transition duration-300"></div>
-                  <FaGithub className="relative text-foreground hover:text-primary transition-colors w-7 h-7" />
-                </a>
-
-                <ModeToggle />
-              </div>
-
-              <div className="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0">
-                <a
-                  href="#features"
-                  className="text-lg text-foreground hover:text-primary mx-2 md:mx-4 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary hover:after:w-full after:transition-all after:duration-300"
-                >
-                  Features
-                </a>
-                <a
-                  href="#testimonials"
-                  className="text-lg text-foreground hover:text-primary mx-2 md:mx-4 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary hover:after:w-full after:transition-all after:duration-300"
-                >
-                  Testimonials
-                </a>
-                <a
-                  href="#contact"
-                  className="text-lg text-foreground hover:text-primary mx-2 md:mx-4 transition-colors relative after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-primary hover:after:w-full after:transition-all after:duration-300"
-                >
-                  Contact
-                </a>
-              </div>
-            </nav>
-          </div>
-        </header>
-
-        {/* Hero Section */}
-        <section className="relative flex flex-col items-center justify-center text-center py-24 md:py-32 px-6 md:px-0 overflow-hidden">
-          {/* Background elements */}
-          <div className="absolute inset-0 z-0">
-            <div className="absolute top-20 left-10 w-72 h-72 bg-primary/20 rounded-full filter blur-3xl animate-float"></div>
-            <div className="absolute bottom-10 right-10 w-80 h-80 bg-secondary/20 rounded-full filter blur-3xl animate-float animation-delay-2000"></div>
-            <div className="absolute top-40 right-20 w-64 h-64 bg-accent/10 rounded-full filter blur-3xl animate-float animation-delay-1000"></div>
-          </div>
-
-          <div className="relative z-10 max-w-4xl mx-auto">
-            <div className="reveal-on-scroll animate-fade-down">
-              <h2 className="text-4xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-accent">
-                Ace Your Next Interview
-              </h2>
-            </div>
-
-            <div className="reveal-on-scroll animate-fade-up delay-200">
-              <p className="mt-6 text-lg md:text-xl text-foreground/80 max-w-3xl">
-                Practice with AI-powered mock interviews and get personalized feedback to improve your interview skills
-                and land your dream job.
-              </p>
-            </div>
-
-            <div className="mt-10 flex flex-col md:flex-row gap-4 justify-center reveal-on-scroll animate-fade-up delay-300">
-              <a
-                href="/dashboard"
-                className="group relative px-8 py-3 text-lg font-semibold overflow-hidden rounded-lg"
-              >
-                <div className="absolute inset-0 w-full h-full transition-all duration-300 bg-gradient-to-r from-primary to-secondary"></div>
-                <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-primary to-secondary opacity-0 group-hover:opacity-100 transition-opacity duration-300 scale-105"></div>
-                <span className="relative z-10 text-white flex items-center justify-center gap-2">
-                  Get Started <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </span>
-              </a>
-
-              <a href="#features" className="group relative px-8 py-3 text-lg font-semibold overflow-hidden rounded-lg">
-                <div className="absolute inset-0 w-full h-full transition-all duration-300 border-2 border-primary/50 dark:border-primary/30"></div>
-                <div className="absolute inset-0 w-full h-full bg-primary opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
-                <span className="relative z-10 text-foreground flex items-center justify-center gap-2">
-                  Learn More <ArrowDown className="w-5 h-5 group-hover:translate-y-1 transition-transform" />
-                </span>
-              </a>
-            </div>
-          </div>
-
-          {/* Floating elements */}
-          <div className="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex flex-col items-center animate-bounce">
-            <ArrowDown className="w-6 h-6 text-primary/70" />
-            <span className="text-sm text-foreground/50">Scroll to explore</span>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="py-20 px-6 md:px-0 relative">
-          <div className="container mx-auto text-center relative z-10">
-            <div className="reveal-on-scroll animate-fade-down">
-              <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                Features
-              </h2>
-              <p className="mt-4 text-lg text-foreground/80 max-w-3xl mx-auto">
-                Our AI Mock Interview platform offers a range of powerful features:
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-              <div className="reveal-on-scroll animate-slide-in-left delay-100">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 h-full border border-primary/10 relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                        <MessageSquare className="w-7 h-7 text-primary" />
-                      </div>
-                      <h3 className="text-2xl font-semibold text-foreground mb-4">AI Mock Interviews</h3>
-                      <p className="text-foreground/70">
-                        Experience realistic interview scenarios with our advanced AI that adapts to your responses and
-                        provides real-time feedback.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="reveal-on-scroll animate-fade-up delay-200">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 h-full border border-primary/10 relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mb-6 mx-auto">
-                        <Sparkles className="w-7 h-7 text-secondary" />
-                      </div>
-                      <h3 className="text-2xl font-semibold text-foreground mb-4">Instant Feedback</h3>
-                      <p className="text-foreground/70">
-                        Get instant, personalized feedback to improve your performance and identify areas for growth.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="reveal-on-scroll animate-slide-in-right delay-300">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 h-full border border-primary/10 relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mb-6 mx-auto">
-                        <CheckCircle className="w-7 h-7 text-accent" />
-                      </div>
-                      <h3 className="text-2xl font-semibold text-foreground mb-4">Comprehensive Reports</h3>
-                      <p className="text-foreground/70">
-                        Receive detailed reports highlighting your strengths and weaknesses with actionable insights.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
-              <div className="reveal-on-scroll animate-slide-in-left delay-400">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 h-full border border-primary/10 relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-6 mx-auto">
-                        <Cpu className="w-7 h-7 text-primary" />
-                      </div>
-                      <h3 className="text-2xl font-semibold text-foreground mb-4">Advanced AI Technology</h3>
-                      <p className="text-foreground/70">
-                        Powered by state-of-the-art AI models that understand context and provide human-like
-                        interactions.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-
-
-              <div className="reveal-on-scroll animate-slide-in-right delay-600">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 h-full border border-primary/10 relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                    <div className="relative z-10">
-                      <div className="w-14 h-14 rounded-full bg-accent/10 flex items-center justify-center mb-6 mx-auto">
-                        <Users className="w-7 h-7 text-accent" />
-                      </div>
-                      <h3 className="text-2xl font-semibold text-foreground mb-4">Industry Specific</h3>
-                      <p className="text-foreground/70">
-                        Tailored interviews for different industries and roles to match your specific career goals, helps gain insights.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Testimonials Section */}
-        <section id="testimonials" className="py-20 px-6 md:px-0 relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-primary/5 to-background opacity-50"></div>
-          <div className="container mx-auto text-center relative z-10">
-            <div className="reveal-on-scroll animate-fade-down">
-              <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary">
-                What Our Users Say
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12">
-              <div className="reveal-on-scroll animate-slide-in-left">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 border border-primary/10 relative">
-                    <div className="absolute top-4 right-4">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 text-secondary fill-secondary" />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-foreground/80 text-lg mt-6">
-                      "The AI mock interviews were incredibly helpful. I felt much more confident going into my real
-                      interview. The feedback was detailed and actionable."
-                    </p>
-                    <div className="mt-6 flex items-center">
-                      <div className="w-12 h-12 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
-                        MK
-                      </div>
-                      <div className="ml-4 text-left">
-                        <h4 className="text-lg font-semibold text-foreground">Mohan Kumar</h4>
-                        <p className="text-sm text-foreground/60">Software Engineer</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="reveal-on-scroll animate-slide-in-right">
-                <div className="rounded-xl overflow-hidden group transition-all duration-300 hover:translate-y-[-5px]">
-                  <div className="glass p-8 border border-primary/10 relative">
-                    <div className="absolute top-4 right-4">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 text-secondary fill-secondary" />
-                        ))}
-                      </div>
-                    </div>
-                    <p className="text-foreground/80 text-lg mt-6">
-                      "The feedback was spot on and helped me improve my answers. The platform is intuitive and the AI
-                      feels remarkably human-like. Highly recommend!"
-                    </p>
-                    <div className="mt-6 flex items-center">
-                      <div className="w-12 h-12 rounded-full bg-secondary/20 flex items-center justify-center text-secondary font-bold">
-                        SR
-                      </div>
-                      <div className="ml-4 text-left">
-                        <h4 className="text-lg font-semibold text-foreground">Soham Ram</h4>
-                        <p className="text-sm text-foreground/60">Product Manager</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Contact Section */}
-        <section id="contact" className="py-20 px-6 md:px-0 relative">
-          <div className="reveal-on-scroll animate-fade-up">
-            <Contect />
-          </div>
-        </section>
-      </main>
-
-      <footer className="py-8 bg-gradient-to-r from-primary/90 to-secondary/90 text-white text-center relative z-10">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-            <div className="text-left">
-              <h3 className="text-xl font-bold mb-4">SimulateRecruitAI</h3>
-              <p className="text-white/80">
-                Ace your next interview with AI-powered mock interviews and personalized feedback.
-              </p>
-            </div>
-            <div className="text-left">
-              <h3 className="text-xl font-bold mb-4">Quick Links</h3>
-              <ul className="space-y-2">
-                <li>
-                  <a href="#features" className="text-white/80 hover:text-white transition-colors">
-                    Features
-                  </a>
-                </li>
-                <li>
-                  <a href="#testimonials" className="text-white/80 hover:text-white transition-colors">
-                    Testimonials
-                  </a>
-                </li>
-                <li>
-                  <a href="#contact" className="text-white/80 hover:text-white transition-colors">
-                    Contact
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div className="text-left">
-                <h3 className="text-xl font-bold mb-4">Connect</h3>
-                <div className="flex space-x-4">
-                  <a
-                    href={socialLinks.github}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-white"
-                  >
-                    <FaGithub className="w-6 h-6" />
-                  </a>
-                  <a
-                    href={socialLinks.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-white"
-                  >
-                    <FaLinkedin className="w-6 h-6" />
-                  </a>
-                  <a
-                    href={socialLinks.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-white/80 hover:text-white"
-                  >
-                    <FaInstagram className="w-6 h-6" />
-                  </a>
-                  <button
-                    onClick={() =>
-                      openAppOrFallback(
-                        socialLinks.twitterApp,
-                        socialLinks.twitterWeb
-                      )
-                    }
-                    className="text-white/80 hover:text-white"
-                  >
-                    <FaTwitter className="w-6 h-6" />
-                  </button>
-                </div>
-              </div>
-          </div>
-          <div className="pt-8 border-t border-white/20">
-            <p className="text-white/80">© {new Date().getFullYear()} SimulateRecruitAI. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
-  )
+  return <div ref={ref} className={`${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} transition-all duration-700 ${className}`}>{children}</div>
 }
 
-export default page
+function DashboardPreview() {
+  return <div className="relative mx-auto max-w-xl rounded-[2rem] border border-white/15 bg-[#16171b] p-3 shadow-2xl">
+    <div className="rounded-[1.45rem] bg-[#f5f5f2] p-5 text-[#111214] sm:p-7">
+      <div className="mb-8 flex items-center justify-between text-xs font-semibold"><span>SIMULATE RECRUIT AI</span><span className="rounded-full bg-[#dddeda] px-3 py-1">LIVE SESSION</span></div>
+      <div className="grid gap-5 sm:grid-cols-[1.4fr_.9fr]">
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><p className="text-xs font-medium text-black/50">QUESTION 03 OF 08</p><p className="mt-3 text-lg font-semibold leading-snug">Tell me about a time you resolved a difficult team decision.</p>
+          <div className="mt-6 h-16 rounded-xl border border-black/10 bg-[#efefeb] px-4 py-5"><div className="flex h-5 items-center gap-1">{[2,4,6,3,5,2].map((height, index) => <i key={index} className="w-1 rounded-full bg-black/80" style={{ height: height * 4 }} />)}<span className="ml-2 text-[10px] text-black/45">Listening</span></div></div>
+          <div className="mt-5 flex items-center justify-between"><span className="text-xs text-black/50">Response time 01:24</span><span className="rounded-lg bg-black px-3 py-2 text-xs font-semibold text-white">Recording</span></div>
+        </div>
+        <div className="space-y-3"><p className="text-xs font-semibold text-black/50">LIVE SIGNALS</p>{[["Clarity", "86"], ["Structure", "91"], ["Presence", "78"]].map(([label, score]) => <div key={label} className="rounded-xl bg-[#e4e4df] p-3"><div className="flex justify-between text-xs font-medium"><span>{label}</span><span>{score}</span></div><div className="mt-2 h-1.5 bg-black/10"><div className="h-full bg-black" style={{ width: `${score}%` }} /></div></div>)}</div>
+      </div>
+      <div className="mt-5 grid grid-cols-7 items-end gap-2 rounded-xl bg-white px-4 pt-6">{[5, 9, 7, 12, 8, 14, 10].map((height, index) => <span key={index} className="bg-black" style={{ height: height * 4, opacity: index === 3 || index === 5 ? 1 : 0.3 }} />)}</div>
+    </div>
+  </div>
+}
+
+function CtaGraphic() {
+  return <div aria-hidden="true" className="relative mx-auto hidden h-48 w-full max-w-md overflow-hidden rounded-xl border border-black/15 bg-[#deded8] lg:block dark:border-white/15 dark:bg-[#17181a]">
+    <div className="absolute left-8 top-7 h-24 w-24 rounded-full border-[12px] border-[#6d42f5]" /><div className="absolute left-28 top-14 h-px w-40 bg-black/65 dark:bg-white/65" /><div className="absolute left-[17.5rem] top-9 h-11 w-11 bg-[#6d42f5]" />
+    <div className="absolute right-7 top-7 text-[11px] font-bold tracking-[.22em] text-black/55 dark:text-white/55">PRACTICE SIGNAL</div>
+    <div className="absolute bottom-5 left-7 flex items-end gap-1.5">{[24, 48, 34, 68, 42, 82, 55].map((height, index) => <span key={index} className={index === 5 ? "w-4 bg-[#6d42f5]" : "w-4 bg-black/70 dark:bg-white/70"} style={{ height }} />)}</div>
+    <div className="absolute bottom-7 right-8 rotate-[-11deg] border border-black/40 px-4 py-2 text-xl font-semibold tracking-tight text-black dark:border-white/40 dark:text-white">READY</div>
+  </div>
+}
+
+function FeatureVisual({ index }) {
+  if (index === 0) return <div className="grid h-full grid-cols-[1fr_.75fr] gap-3 text-[10px]">
+    <div className="rounded-lg border border-foreground/15 p-3"><p className="text-foreground/50">TARGET ROLE</p><p className="mt-2 text-sm font-semibold">Product Manager</p><div className="mt-4 flex flex-wrap gap-1"><span className="border border-foreground/25 px-2 py-1">Strategy</span><span className="border border-foreground/25 px-2 py-1">Senior</span></div></div>
+    <div className="flex flex-col justify-between rounded-lg bg-foreground p-3 text-background"><span className="text-background/60">QUESTION PATH</span><strong className="text-xl leading-none">08</strong><span className="border-t border-background/25 pt-2">Adaptive</span></div>
+  </div>
+  if (index === 1) return <div className="grid h-full grid-cols-[.8fr_1.2fr] gap-3">
+    <div className="rounded-lg bg-foreground p-3 text-background"><p className="text-[10px] text-background/60">RESPONSE</p><div className="mt-3 space-y-2">{[82, 58, 94].map((width, key) => <span key={key} className="block h-1.5 bg-background" style={{ width: `${width}%`, opacity: key === 1 ? 0.45 : 1 }} />)}</div><p className="mt-5 text-xs font-semibold">Clear opening</p></div>
+    <div className="rounded-lg border border-foreground/15 p-3"><div className="flex items-center justify-between text-[10px]"><span>LIVE REVIEW</span><span className="rounded-full bg-foreground px-2 py-1 text-background">86</span></div><p className="mt-4 text-xs font-semibold">Strong structure</p><p className="mt-1 text-[10px] leading-relaxed text-foreground/55">Lead with the decision, then give context and outcome.</p><div className="mt-3 h-1.5 bg-foreground/10"><div className="h-full w-[86%] bg-foreground" /></div></div>
+  </div>
+  return <div className="h-full rounded-lg border border-foreground/15 p-3"><div className="flex items-center justify-between text-[10px]"><span>SESSION TREND</span><strong>84 / 100</strong></div><div className="mt-4 flex h-12 items-end gap-2">{[28, 38, 33, 55, 46, 72, 64, 84].map((height, key) => <span key={key} className={key === 7 ? "flex-1 bg-foreground" : "flex-1 bg-foreground/25"} style={{ height: `${height}%` }} />)}</div><div className="mt-4 flex gap-4 border-t border-foreground/10 pt-2 text-[10px] text-foreground/55"><span>Clarity +12</span><span>Structure +8</span><span>Confidence +14</span></div></div>
+}
+
+export default function Page() {
+  const [menuOpen, setMenuOpen] = useState(false)
+  const go = (id) => {
+    setMenuOpen(false)
+    window.history.pushState({}, "", `/?section=${id}`)
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" })
+  }
+  useEffect(() => {
+    const section = new URLSearchParams(window.location.search).get("section")
+    if (section) setTimeout(() => document.getElementById(section)?.scrollIntoView({ behavior: "smooth", block: "start" }), 80)
+  }, [])
+  const nav = (label, id) => <button onClick={() => go(id)} className="text-sm font-medium text-foreground/70 transition-colors hover:text-foreground">{label}</button>
+  const features = [["01", "Adaptive Questioning", "Custom interview questions built dynamically for targeted industries and skill levels."], ["02", "Instant Feedback Engine", "Immediate evaluation on response structure, clarity and key talking points."], ["03", "Performance Analytics", "Comprehensive metric breakdowns tracking progress across practice sessions over time."]]
+
+  return <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
+    <header className="sticky top-0 z-50 border-b border-foreground/10 bg-background/95 backdrop-blur"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 lg:px-8">
+      <a href="/" className="text-lg font-bold tracking-tight">SimulateRecruitAI</a>
+      <nav className="hidden items-center gap-6 lg:flex">{nav("About", "about")}{nav("Features", "features")}{nav("Workflow", "workflow")}{nav("Insights", "insights")}{nav("FAQs", "faqs")}{nav("Contact", "contact")}</nav>
+      <div className="flex items-center gap-2 sm:gap-3"><iframe src="https://github.com/sponsors/Soumilgit/button" title="Sponsor SimulateRecruitAI" height="32" width="114" className="hidden rounded border-0 sm:block" /><a href={repo} target="_blank" rel="noreferrer" aria-label="GitHub repository" className="hidden rounded-lg border border-foreground/20 p-2 text-foreground hover:bg-foreground hover:text-background sm:block"><FaGithub className="h-4 w-4" /></a><ModeToggle /><button aria-label="Open navigation" onClick={() => setMenuOpen(!menuOpen)} className="rounded-lg border border-foreground/20 px-3 py-2 text-xs font-semibold lg:hidden">Menu</button></div>
+    </div>{menuOpen && <nav className="border-t border-foreground/10 bg-background px-5 py-5 lg:hidden"><div className="flex flex-col gap-5">{nav("About", "about")}{nav("Features", "features")}{nav("Workflow", "workflow")}{nav("Insights", "insights")}{nav("FAQs", "faqs")}{nav("Contact", "contact")}</div></nav>}</header>
+    <main>
+      <section id="about" className="scroll-mt-16 bg-[#f2f2ee] px-5 py-16 text-[#101112] dark:bg-[#0b0c0d] dark:text-white sm:py-24 lg:min-h-[670px] lg:px-8"><div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[.92fr_1.08fr]">
+        <Reveal><p className="mb-6 text-xs font-semibold tracking-[.2em] text-black/55 dark:text-white/55">AI INTERVIEW PRACTICE</p><h1 className="max-w-xl text-5xl font-semibold tracking-[-.055em] sm:text-6xl lg:text-7xl">Master Your Interview Performance</h1><p className="mt-7 max-w-lg text-lg leading-relaxed text-black/65 dark:text-white/70">Practice realistic interview scenarios with real-time AI feedback to land your dream role.</p><div className="mt-9 flex flex-wrap gap-3"><a href="/dashboard" className="min-w-36 rounded-lg bg-[#101112] px-7 py-3 text-center text-sm font-semibold text-white hover:opacity-85 dark:bg-white dark:text-black">Get Started</a><button onClick={() => go("features")} className="min-w-36 rounded-lg border border-black/35 px-7 py-3 text-sm font-semibold hover:bg-black hover:text-white dark:border-white/35 dark:hover:bg-white dark:hover:text-black">Learn More</button></div><div className="mt-16 grid max-w-md grid-cols-3 gap-5 border-t border-black/15 pt-5 text-sm dark:border-white/15"><div><strong className="block text-xl">Role-led</strong><span className="text-black/55 dark:text-white/55">Practice paths</span></div><div><strong className="block text-xl">Instant</strong><span className="text-black/55 dark:text-white/55">Review cycles</span></div><div><strong className="block text-xl">Focused</strong><span className="text-black/55 dark:text-white/55">Growth signals</span></div></div></Reveal>
+        <Reveal className="lg:translate-x-8"><DashboardPreview /></Reveal>
+      </div></section>
+      <section id="features" className="scroll-mt-20 px-5 py-20 lg:px-8 lg:py-28"><div className="mx-auto max-w-7xl"><Reveal className="grid gap-8 md:grid-cols-2"><h2 className="max-w-xl text-4xl font-semibold tracking-[-.045em] sm:text-5xl">Interview practice built around the moments that matter.</h2><p className="max-w-lg text-lg leading-relaxed text-foreground/65">Make every practice session specific, actionable and easy to review. You bring the role. We help you build the response.</p></Reveal><div className="mt-14 grid gap-5 lg:grid-cols-3">{features.map(([number, title, description], index) => <Reveal key={title}><article className="h-full rounded-2xl border border-foreground/15 bg-foreground/[.025] p-6 transition-all hover:-translate-y-1 hover:shadow-xl"><div className="h-40 rounded-xl border border-foreground/10 bg-background p-3"><FeatureVisual index={index} /></div><p className="mt-7 text-xs font-semibold text-foreground/50">{number}</p><h3 className="mt-2 text-2xl font-semibold tracking-tight">{title}</h3><p className="mt-3 leading-relaxed text-foreground/65">{description}</p></article></Reveal>)}</div></div></section>
+      <section id="workflow" className="scroll-mt-20 border-y border-foreground/10 bg-foreground/[.035] px-5 py-20 lg:px-8 lg:py-28"><div className="mx-auto max-w-7xl"><Reveal><p className="text-xs font-semibold tracking-[.2em] text-foreground/55">HOW IT WORKS</p><h2 className="mt-4 max-w-2xl text-4xl font-semibold tracking-[-.045em] sm:text-5xl">A clear practice loop from setup to stronger answers.</h2></Reveal><div className="mt-14 grid gap-4 lg:grid-cols-3">{[["01", "Select Target Role & Skill Level", "Set the role, seniority and interview focus you want to prepare for."], ["02", "Complete Simulated Interview Session", "Answer guided prompts in a focused interview environment."], ["03", "Review Instant Performance Metrics & Insights", "Identify what worked and what to improve before your next session."]].map(([number, title, description]) => <Reveal key={number}><div className="h-full rounded-2xl border border-foreground/15 bg-background p-6"><span className="text-5xl font-semibold text-foreground/15">{number}</span><div className="mt-10 border-l-2 border-foreground pl-4"><h3 className="text-xl font-semibold">{title}</h3><p className="mt-3 leading-relaxed text-foreground/65">{description}</p></div></div></Reveal>)}</div></div></section>
+      <section id="insights" className="scroll-mt-20 px-5 py-20 lg:px-8 lg:py-28"><div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2"><Reveal><p className="text-xs font-semibold tracking-[.2em] text-foreground/55">PERFORMANCE INSIGHTS</p><h2 className="mt-4 text-4xl font-semibold tracking-[-.045em] sm:text-5xl">Know exactly where your next answer can improve.</h2><p className="mt-6 max-w-lg text-lg leading-relaxed text-foreground/65">Your feedback turns each response into a practical rehearsal plan. Compare the parts of your interview performance that make the clearest difference when you speak with a hiring team.</p><a href="/dashboard" className="mt-8 inline-block rounded-lg bg-foreground px-5 py-3 text-sm font-semibold text-background hover:opacity-85">Start a session</a></Reveal><Reveal><div className="rounded-2xl border border-foreground/15 bg-[#e7e7e2] p-5 text-[#101112] sm:p-8"><div className="flex items-center justify-between"><div><p className="text-xs font-semibold text-black/50">SESSION SUMMARY</p><h3 className="mt-1 text-2xl font-semibold">Interview readiness</h3></div><strong className="text-4xl">84</strong></div><div className="mt-8 grid gap-3 sm:grid-cols-3">{[["Clarity Score", "86"], ["Technical Accuracy", "91"], ["Communication", "78"]].map(([label, score]) => <div key={label} className="rounded-xl bg-white p-4"><p className="text-xs text-black/55">{label}</p><p className="mt-5 text-3xl font-semibold">{score}</p><div className="mt-3 h-1.5 bg-black/10"><div className="h-full bg-black" style={{ width: `${score}%` }} /></div></div>)}</div><div className="mt-5 rounded-xl bg-[#151618] p-5 text-white"><p className="text-xs text-white/60">NEXT PRACTICE FOCUS</p><p className="mt-2 text-lg font-medium">Lead with the decision you made, then support it with a concise example.</p></div></div></Reveal></div></section>
+      <section id="start" className="scroll-mt-20 px-5 pb-20 lg:px-8 lg:pb-28"><Reveal className="mx-auto grid max-w-7xl items-center gap-8 rounded-2xl bg-[#deded8] px-7 py-12 text-[#101112] dark:bg-[#0b0c0d] dark:text-white sm:px-12 sm:py-16 lg:grid-cols-[1fr_.8fr]"><div><h2 className="text-4xl font-semibold tracking-[-.045em]">Ready to get started?</h2><p className="mt-3 text-lg text-black/65 dark:text-white/65">Build confidence through deliberate interview practice.</p><div className="mt-8 flex flex-wrap gap-3"><a href="/dashboard" className="min-w-36 rounded-lg bg-[#101112] px-7 py-3.5 text-center text-sm font-semibold text-white dark:bg-white dark:text-black">Get Started</a><button onClick={() => go("features")} className="min-w-36 rounded-lg border border-black/30 px-7 py-3.5 text-sm font-semibold dark:border-white/30">Learn More</button></div></div><CtaGraphic /></Reveal></section>
+      <section id="faqs" className="scroll-mt-20 border-y border-foreground/10 bg-foreground/[.025] px-5 py-20 lg:px-8"><div className="mx-auto max-w-4xl"><Reveal><h2 className="text-3xl font-semibold tracking-tight">Frequently asked questions</h2></Reveal><div className="mt-8 grid grid-cols-1 gap-3">{faqs.map(([question, answer]) => <Reveal key={question}><details className="group rounded-xl border border-foreground/15 bg-background p-5"><summary className="cursor-pointer list-none text-sm font-semibold">{question}<span className="float-right text-2xl leading-none text-foreground/70 group-open:hidden">↓</span><span className="float-right hidden text-2xl leading-none text-foreground group-open:block">↑</span></summary><p className="mt-3 max-w-3xl text-sm leading-relaxed text-foreground/65">{answer}</p></details></Reveal>)}</div></div></section>
+      <section id="contact" className="scroll-mt-20 px-5 py-20 lg:px-8"><Contect /></section>
+    </main>
+    <footer className="border-t border-foreground/10 px-5 py-14 lg:px-8"><div className="mx-auto max-w-7xl"><div className="grid gap-10 md:grid-cols-4"><div><p className="text-xl font-bold">SimulateRecruitAI</p><p className="mt-3 max-w-sm leading-relaxed text-foreground/60">Deliberate practice for the conversations that shape your career. Select a role, rehearse with purpose and learn from every answer.</p></div><div><p className="text-sm font-semibold">Explore</p><div className="mt-4 flex flex-col items-start gap-3">{nav("About", "about")}{nav("Features", "features")}{nav("Workflow", "workflow")}{nav("Insights", "insights")}</div></div><div><p className="text-sm font-semibold">Support</p><div className="mt-4 flex flex-col items-start gap-3">{nav("Frequently asked questions", "faqs")}{nav("Contact", "contact")}<a href={repo} target="_blank" rel="noreferrer" className="text-sm text-foreground/70 hover:text-foreground">Repository</a></div></div><div><p className="text-sm font-semibold">Connect</p><div className="mt-4 flex gap-3">{socialLinks.map(({ label, href, Icon }) => <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="rounded-lg border border-foreground/15 p-2.5 text-foreground/70 transition-colors hover:bg-foreground hover:text-background"><Icon className="h-4 w-4" /></a>)}</div><p className="mt-4 text-sm leading-relaxed text-foreground/60">Follow product updates and development notes.</p></div></div><div className="mt-12 border-t border-foreground/10 pt-6 text-sm text-foreground/50">© 2026 SimulateRecruitAI. All rights reserved.</div></div></footer>
+  </div>
+}

@@ -1,7 +1,4 @@
 "use client";
-import { db } from "@/utils/db";
-import { UserAnswer } from "@/utils/schema";
-import { eq } from "drizzle-orm";
 import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -23,14 +20,9 @@ const Feedback = ({ params }) => {
   }, []);
 
   const GetFeedback = async () => {
-    const result = await db
-      .select()
-      .from(UserAnswer)
-      .where(eq(UserAnswer.mockIdRef, params.interviewId))
-      .orderBy(UserAnswer.id);
-
-    console.log(result);
-    setFeedbackList(result);
+    const response = await fetch(`/api/interviews/${params.interviewId}/answers`);
+    if (!response.ok) return;
+    setFeedbackList(await response.json());
   };
 
   const overallRating = useMemo(() => {

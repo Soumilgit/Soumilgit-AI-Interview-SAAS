@@ -1,7 +1,4 @@
 "use client";
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
-import { eq } from "drizzle-orm";
 import { Lightbulb, WebcamIcon } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -20,12 +17,9 @@ const Interview = ({ params }) => {
   }, []);
   
   const GetInterviewDetails = async () => {
-    const result = await db
-      .select()
-      .from(MockInterview)
-      .where(eq(MockInterview.mockId, params.interviewId));
-      
-    setInterviewData(result[0]);
+    const response = await fetch(`/api/interviews/${params.interviewId}`);
+    if (!response.ok) return;
+    setInterviewData(await response.json());
   };
   return (
     <div className="my-10">

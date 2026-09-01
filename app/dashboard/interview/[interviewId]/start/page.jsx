@@ -1,7 +1,4 @@
 "use client";
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
-import { eq } from "drizzle-orm";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import QuestionSection from "./_components/QuestionSection";
@@ -18,15 +15,13 @@ const StartInterview = ({ params }) => {
   }, []);
 
   const GetInterviewDetails = async () => {
-    const result = await db
-      .select()
-      .from(MockInterview)
-      .where(eq(MockInterview.mockId, params.interviewId));
-
-    const jsonMockResp = JSON.parse(result[0].jsonMockResp);
+    const response = await fetch(`/api/interviews/${params.interviewId}`);
+    if (!response.ok) return;
+    const interview = await response.json();
+    const jsonMockResp = JSON.parse(interview.jsonMockResp);
     console.log(jsonMockResp);
     setMockInterviewQuestion(jsonMockResp);
-    setInterviewData(result[0]);
+    setInterviewData(interview);
   };
 
   return (

@@ -3,15 +3,16 @@ import { Question } from "@/utils/schema";
 import { eq } from "drizzle-orm";
 import { chatSession } from "@/utils/GeminiAIModal";
 import { NextResponse } from "next/server";
+import { getAuthenticatedEmail } from "@/utils/server-user";
 
 export async function POST(req) {
   try {
-    const { userEmail } = await req.json();
+    const userEmail = await getAuthenticatedEmail();
 
     if (!userEmail) {
       return NextResponse.json(
-        { error: "Missing user email" },
-        { status: 400 }
+        { error: "Unauthorized" },
+        { status: 401 }
       );
     }
 
