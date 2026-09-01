@@ -53,7 +53,7 @@ function DashboardPreview() {
 }
 
 function CtaGraphic() {
-  return <div aria-hidden="true" className="relative mx-auto hidden h-48 w-full max-w-md overflow-hidden rounded-xl border border-black/15 bg-[#deded8] lg:block dark:border-white/15 dark:bg-[#17181a]">
+  return <div aria-hidden="true" className="relative order-first mx-auto h-40 w-full max-w-md overflow-hidden rounded-xl border border-black/15 bg-[#deded8] sm:h-48 lg:order-none dark:border-white/15 dark:bg-[#17181a]">
     <div className="absolute left-8 top-7 h-24 w-24 rounded-full border-[12px] border-[#6d42f5]" /><div className="absolute left-28 top-14 h-px w-40 bg-black/65 dark:bg-white/65" /><div className="absolute left-[17.5rem] top-9 h-11 w-11 bg-[#6d42f5]" />
     <div className="absolute right-7 top-7 text-[11px] font-bold tracking-[.22em] text-black/55 dark:text-white/55">PRACTICE SIGNAL</div>
     <div className="absolute bottom-5 left-7 flex items-end gap-1.5">{[24, 48, 34, 68, 42, 82, 55].map((height, index) => <span key={index} className={index === 5 ? "w-4 bg-[#6d42f5]" : "w-4 bg-black/70 dark:bg-white/70"} style={{ height }} />)}</div>
