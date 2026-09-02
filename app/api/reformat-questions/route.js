@@ -1,9 +1,10 @@
 import { db } from "@/utils/db";
 import { Question } from "@/utils/schema";
 import { and, eq } from "drizzle-orm";
-import { chatSession } from "@/utils/GeminiAIModal";
+import { generateInterviewContent } from "@/utils/GeminiAIModal";
 import { NextResponse } from "next/server";
 import { getAuthenticatedEmail } from "@/utils/server-user";
+import { isRateLimited } from "@/utils/rate-limit";
 
 export async function POST(req) {
   try {
@@ -16,6 +17,8 @@ export async function POST(req) {
         { status: userEmail ? 400 : 401 }
       );
     }
+    if (typeof mockId !== "string" || mockId.length > 100) return NextResponse.json({ error: "Invalid question set." }, { status: 400 })
+    if (isRateLimited(`reformat:${userEmail}`, { limit: 3, windowMs: 60_000 })) return NextResponse.json({ error: "Please wait before reformatting again." }, { status: 429 })
 
     // Fetch the question set
     const result = await db
@@ -68,8 +71,7 @@ Return output as pure JSON only with this exact structure:
 
 Return only valid JSON without any code blocks or markdown.`;
 
-    const aiResult = await chatSession.sendMessage(reformatPrompt);
-    let responseText = aiResult.response.text();
+    let responseText = await generateInterviewContent(reformatPrompt);
     
     // Clean the response
     responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -84,7 +86,7 @@ Return only valid JSON without any code blocks or markdown.`;
     } catch (error) {
       console.error("JSON parsing error:", error);
       return NextResponse.json(
-        { error: "Failed to parse AI response", details: responseText },
+        { error: "Failed to parse AI response" },
         { status: 500 }
       );
     }
@@ -105,7 +107,7 @@ Return only valid JSON without any code blocks or markdown.`;
   } catch (error) {
     console.error("Error reformatting questions:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

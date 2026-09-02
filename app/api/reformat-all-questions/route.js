@@ -1,9 +1,10 @@
 import { db } from "@/utils/db";
 import { Question } from "@/utils/schema";
 import { eq } from "drizzle-orm";
-import { chatSession } from "@/utils/GeminiAIModal";
+import { generateInterviewContent } from "@/utils/GeminiAIModal";
 import { NextResponse } from "next/server";
 import { getAuthenticatedEmail } from "@/utils/server-user";
+import { isRateLimited } from "@/utils/rate-limit";
 
 export async function POST(req) {
   try {
@@ -15,12 +16,15 @@ export async function POST(req) {
         { status: 401 }
       );
     }
+    if (isRateLimited(`reformat-all:${userEmail}`, { limit: 1, windowMs: 60 * 60_000 })) return NextResponse.json({ error: "Bulk reformatting is limited to once per hour." }, { status: 429 })
 
     // Fetch all question sets for the user
     const allQuestions = await db
       .select()
       .from(Question)
       .where(eq(Question.createdBy, userEmail));
+
+    if (allQuestions.length > 10) return NextResponse.json({ error: "Bulk reformat is limited to 10 question sets per request." }, { status: 400 })
 
     if (!allQuestions || allQuestions.length === 0) {
       return NextResponse.json(
@@ -62,8 +66,7 @@ Return ONLY valid JSON:
   ]
 }`;
 
-        const aiResult = await chatSession.sendMessage(reformatPrompt);
-        let responseText = aiResult.response.text();
+        let responseText = await generateInterviewContent(reformatPrompt);
         
         // Clean the response
         responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
@@ -83,9 +86,6 @@ Return ONLY valid JSON:
           .where(eq(Question.mockId, questionSet.mockId));
 
         successCount++;
-        
-        // Add a small delay to avoid rate limiting
-        await new Promise(resolve => setTimeout(resolve, 1000));
         
       } catch (error) {
         console.error(`Error reformatting question set ${questionSet.mockId}:`, error);
@@ -107,7 +107,7 @@ Return ONLY valid JSON:
   } catch (error) {
     console.error("Error in bulk reformat:", error);
     return NextResponse.json(
-      { error: "Internal server error", details: error.message },
+      { error: "Internal server error" },
       { status: 500 }
     );
   }

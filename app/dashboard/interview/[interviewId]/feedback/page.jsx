@@ -1,102 +1,16 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
-
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
 
 const Feedback = ({ params }) => {
-  const router = useRouter();
-  const [feedbackList, setFeedbackList] = useState([]);
-
-  useEffect(() => {
-    GetFeedback();
-  }, []);
-
-  const GetFeedback = async () => {
-    const response = await fetch(`/api/interviews/${params.interviewId}/answers`);
-    if (!response.ok) return;
-    setFeedbackList(await response.json());
-  };
-
-  const overallRating = useMemo(() => {
-    if (feedbackList && feedbackList.length > 0) {
-      const totalRating = feedbackList.reduce(
-        (sum, item) => sum + Number(item.rating),
-        0
-      );
-      // console.log("total",totalRating);
-      // console.log("length",feedbackList.length);
-      return (totalRating / feedbackList.length).toFixed(1);
-    }
-    return 0;
-  }, [feedbackList]);
-
-  return (
-    <div className="p-10">
-      {feedbackList?.length == 0 ? (
-        <h2 className="font-bold text-xl text-gray-500 my-5">
-          No Interview feedback Record Found
-        </h2>
-      ) : (
-        <>
-         <h2 className="text-3xl font-bold text-green-500">Congratulations</h2>
-         <h2 className="font-bold text-2xl">Here is your interview feedback</h2>
-          <h2 className="text-primary text-lg my-3">
-            Your overall interview rating{" "}
-            <strong
-              className={`${
-                overallRating >= 5 ? "text-green-500" : "text-red-600"
-              }`}
-            >
-              {overallRating}
-              <span className="text-black">/10</span>
-            </strong>
-          </h2>
-          <h2 className="text-sm text-gray-500">
-            Find below interview question with correct answer, Your answer and
-            feedback for improvement
-          </h2>
-          {feedbackList &&
-            feedbackList.map((item, index) => (
-              <Collapsible key={index} className="mt-7">
-                <CollapsibleTrigger className="p-2 bg-secondary rounded-lg my-2 text-left flex justify-between gap-7 w-full">
-                  {item.question} <ChevronDown className="h-5 w-5" />{" "}
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <div className="flex flex-col gap-2">
-                    <h2 className="text-red-500 p-2 border rounded-lg">
-                      <strong>Rating: </strong>
-                      {item.rating}
-                    </h2>
-                    <h2 className="p-2 border rounded-lg bg-red-50 text-sm text-red-900">
-                      <strong>Your Answer: </strong>
-                      {item.userAns}
-                    </h2>
-                    <h2 className="p-2 border rounded-lg bg-green-50 text-sm text-green-900">
-                      <strong>Correct Answer: </strong>
-                      {item.correctAns}
-                    </h2>
-                    <h2 className="p-2 border rounded-lg bg-blue-50 text-sm text-black">
-                      <strong>Feedback: </strong>
-                      {item.feedback}
-                    </h2>
-                  </div>
-                </CollapsibleContent>
-              </Collapsible>
-            ))}
-        </>
-      )}
-
-      <Button onClick={() => router.replace("/dashboard")}>Go Home</Button>
-    </div>
-  );
+  const router = useRouter(); const [feedbackList, setFeedbackList] = useState([]);
+  useEffect(() => { fetch(`/api/interviews/${params.interviewId}/answers`).then((response) => response.ok ? response.json() : []).then(setFeedbackList); }, [params.interviewId]);
+  const attempts = useMemo(() => { const newest = [...feedbackList].reverse(); return Array.from({ length: Math.ceil(newest.length / 5) }, (_, index) => newest.slice(index * 5, index * 5 + 5)); }, [feedbackList]);
+  const score = (attempt) => (attempt.reduce((sum, item) => sum + Math.min(10, Math.max(1, Number(item.rating) || 1)), 0) / attempt.length).toFixed(1);
+  if (!feedbackList.length) return <div className="p-10"><h2 className="my-5 text-xl font-bold text-gray-500">No interview feedback record found.</h2><Button onClick={() => router.replace("/dashboard")}>Go Home</Button></div>;
+  return <div className="p-10"><h2 className="text-3xl font-bold text-green-500">Interview feedback</h2><p className="mt-2 text-sm text-gray-500">Your latest attempt is first. Feedback is retained and grouped in sets of five answers.</p>{attempts.map((attempt, attemptIndex) => <section key={attemptIndex} className="mt-7 rounded-xl border p-5"><div className="flex flex-wrap items-center justify-between gap-2"><h3 className="text-xl font-bold">Attempt {attempts.length - attemptIndex}</h3><strong className={Number(score(attempt)) >= 5 ? "text-green-600" : "text-red-600"}>{score(attempt)}/10</strong></div>{attempt.map((item) => <Collapsible key={item.id} className="mt-4"><CollapsibleTrigger className="flex w-full justify-between gap-7 rounded-lg bg-secondary p-3 text-left">{item.question}<ChevronDown className="h-5 w-5 shrink-0" /></CollapsibleTrigger><CollapsibleContent className="space-y-2 pt-2"><p className="rounded-lg border p-2 text-red-600"><strong>Rating:</strong> {Math.min(10, Math.max(1, Number(item.rating) || 1))}/10</p><p className="rounded-lg border bg-red-50 p-2 text-sm text-red-900"><strong>Your answer:</strong> {item.userAns}</p><p className="rounded-lg border bg-green-50 p-2 text-sm text-green-900"><strong>Reference answer:</strong> {item.correctAns}</p><p className="rounded-lg border bg-blue-50 p-2 text-sm text-black"><strong>Feedback:</strong> {item.feedback}</p></CollapsibleContent></Collapsible>)}</section>)}<Button className="mt-8" onClick={() => router.replace("/dashboard")}>Go Home</Button></div>;
 };
-
 export default Feedback;

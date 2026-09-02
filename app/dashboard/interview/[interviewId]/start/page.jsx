@@ -10,6 +10,7 @@ const StartInterview = ({ params }) => {
   const [interviewData, setInterviewData] = useState();
   const [mockInterviewQuestion, setMockInterviewQuestion] = useState();
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
+  const [loadingFollowUp, setLoadingFollowUp] = useState(false);
   useEffect(() => {
     GetInterviewDetails();
   }, []);
@@ -22,6 +23,19 @@ const StartInterview = ({ params }) => {
     console.log(jsonMockResp);
     setMockInterviewQuestion(jsonMockResp);
     setInterviewData(interview);
+  };
+
+  const continueAdaptiveInterview = async () => {
+    setLoadingFollowUp(true);
+    try {
+      const response = await fetch(`/api/interviews/${interviewData?.mockId}/follow-up`, { method: "POST" });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to generate follow-up questions");
+      setMockInterviewQuestion(data.questions);
+      if (data.questions.length > activeQuestionIndex + 1) setActiveQuestionIndex(activeQuestionIndex + 1);
+    } catch (error) {
+      alert(error.message || "Unable to continue the interview.");
+    } finally { setLoadingFollowUp(false); }
   };
 
   return (
@@ -55,7 +69,10 @@ const StartInterview = ({ params }) => {
             Next Question
           </Button>
         )}
-        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && (
+        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && mockInterviewQuestion?.length < (Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10) && (
+          <Button onClick={continueAdaptiveInterview} disabled={loadingFollowUp}>{loadingFollowUp ? "Preparing follow-up questions..." : "Continue adaptive interview"}</Button>
+        )}
+        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && mockInterviewQuestion?.length >= (Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10) && (
           <Link
             href={"/dashboard/interview/" + interviewData?.mockId + "/feedback"}
           >

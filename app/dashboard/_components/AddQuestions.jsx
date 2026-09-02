@@ -11,12 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { LoaderCircle } from "lucide-react";
-import { chatSession } from "@/utils/GeminiAIModal";
-import { v4 as uuidv4 } from "uuid";
-import { db } from "@/utils/db";
-import { useUser } from "@clerk/nextjs";
-import moment from "moment";
-import { Question } from "@/utils/schema";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -30,7 +24,6 @@ const AddQuestions = () => {
     jobExperience: ""
   });
   const [loading, setLoading] = useState(false);
-  const { user } = useUser();
   const router = useRouter();
 
   const handleChange = (e) => {
@@ -43,75 +36,12 @@ const AddQuestions = () => {
     setLoading(true);
     
     try {
-      const InputPrompt = `You are an expert interview coach creating practice questions.
-
-Generate 5 interview questions with well-structured, clean answers in JSON format for:
-- Job Position: ${formData.jobPosition}
-- Job Description: ${formData.jobDesc}
-- Years of Experience: ${formData.jobExperience}
-- Question Type: ${formData.typeQuestion}
-- Target Company: ${formData.company}
-
-IMPORTANT FORMATTING GUIDELINES FOR ANSWERS:
-1. Keep answers concise, clear, and professional (3-5 short paragraphs maximum)
-2. Use proper paragraph breaks for readability
-3. Structure answers with:
-   - Brief introduction/definition (if applicable)
-   - Key points or steps (numbered or bulleted conceptually in text)
-   - Practical example or use case (if relevant)
-   - Brief conclusion or best practice
-4. Avoid lengthy explanations - focus on actionable, interview-appropriate responses
-5. Use clean, readable text without excessive formatting markers
-6. Write in a conversational yet professional tone
-7. Each answer should be interview-ready (what a candidate would say in 2-3 minutes)
-
-Return output as pure JSON only with this exact structure:
-{
-  "questions": [
-    {
-      "Question": "Your question here?",
-      "Answer": "Well-structured, clean answer with proper paragraph breaks and concise explanations"
-    }
-  ]
-}
-
-Do not include any markdown formatting, code blocks, or extra characters. Return only valid JSON.`;
-
-      const result = await chatSession.sendMessage(InputPrompt);
-      const responseText = result.response.text();
-      
-      // Extract JSON from response
-      let jsonResponse;
-      try {
-        const jsonString = responseText.match(/\{[\s\S]*\}/)?.[0] || responseText;
-        jsonResponse = JSON.parse(jsonString);
-        
-        if (!jsonResponse.questions || !Array.isArray(jsonResponse.questions)) {
-          throw new Error("Invalid response format");
-        }
-      } catch (error) {
-        console.error("JSON parsing error:", error);
-        toast.error("Failed to parse AI response. Please try again.");
-        return;
-      }
-
-      const resp = await db
-      .insert(Question)
-      .values({
-        mockId: uuidv4(),
-        mockQuestionJsonResp: JSON.stringify(jsonResponse), // Fixed this line
-        jobPosition: formData.jobPosition,
-        jobDesc: formData.jobDesc,
-        jobExperience: formData.jobExperience,
-        typeQuestion: formData.typeQuestion,
-        company: formData.company,
-        createdBy: user?.primaryEmailAddress?.emailAddress,
-        createdAt: moment().format("YYYY-MM-DD"),
-      })
-      .returning({ mockId: Question.mockId });
+      const response = await fetch("/api/questions", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(formData) });
+      const resp = await response.json();
+      if (!response.ok) throw new Error(resp.error || "Unable to generate questions");
 
       toast.success("Questions generated successfully!");
-      router.push(`/dashboard/pyq/${resp[0]?.mockId}`);
+      router.push(`/dashboard/pyq/${resp.mockId}`);
       setOpenDialog(false);
     } catch (error) {
       console.error("Error:", error);

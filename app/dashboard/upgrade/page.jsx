@@ -5,7 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import { CheckCircle2, Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "next-themes";
-import Contect from "../../_components/Contect";
+import Contact from "../../_components/Contact";
 
 const Upgrade = () => {
   const { user } = useUser();
@@ -16,6 +16,13 @@ const Upgrade = () => {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
+    if (!user) return;
+    fetch('/api/subscription', { cache: 'no-store' })
+      .then((response) => response.ok ? response.json() : null)
+      .then((subscription) => setSubscriptionStatus(subscription))
+      .catch(() => setSubscriptionStatus(null));
+    return;
+
     // Check subscription status from localStorage (account-specific)
     try {
       const userEmail = user?.primaryEmailAddress?.emailAddress;
@@ -53,7 +60,7 @@ const Upgrade = () => {
             
             // Show activation success message
             setTimeout(() => {
-              const planName = subscriptionData.plan === 'basic' ? 'Basic' : 'Premium';
+              const planName = subscriptionData.plan === 'monthly' ? 'Monthly' : 'Yearly';
               alert(`✅ Subscription Updated! Your ${planName} plan is now fully active. Enjoy your premium features!`);
             }, 500);
           }, Math.random() * 1000 + 4000); // Random delay between 4-5 seconds
@@ -93,10 +100,10 @@ const Upgrade = () => {
 
   const getPlanDetails = (plan) => {
     const plans = {
-      'basic': { name: 'Basic', price: '$7.99', color: 'text-blue-600' },
-      'premium': { name: 'Premium', price: '$49.00', color: 'text-orange-500' }
+      'monthly': { name: 'Monthly', price: '$7.99', color: 'text-blue-600' },
+      'yearly': { name: 'Yearly', price: '$49.00', color: 'text-orange-500' }
     };
-    return plans[plan] || plans.basic;
+    return plans[plan] || plans.monthly;
   };
 
   // Handle payment button click - mark as subscribed after realistic payment time
@@ -117,8 +124,16 @@ const Upgrade = () => {
     setProcessingPlan(planId);
     setProcessingMessage('Opening payment window...');
     
-    // Open Stripe payment window
+    // The server validates the configured Stripe destination before redirecting.
     const paymentWindow = window.open(paymentUrl, '_blank', 'width=800,height=600');
+    if (!paymentWindow) {
+      setProcessingPlan(null);
+      setProcessingMessage('Please allow popups to continue to checkout.');
+      return;
+    }
+
+    // Local-only subscription state for the current browser. This is a UI flow,
+    // not a payment verification mechanism.
     
     // Update processing message over time
     setTimeout(() => setProcessingMessage('Processing payment...'), 5000);
@@ -278,7 +293,7 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => handlePaymentClick(plan.id, plan.link + "?prefilled_email=" + user?.primaryEmailAddress?.emailAddress)}
+                    onClick={() => handlePaymentClick(plan.id, plan.link)}
                     size="lg"
                     disabled={processingPlan === plan.id}
                     className={`w-full ${
@@ -357,7 +372,7 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
               </button>
             </div>
             <div className="p-6">
-              <Contect />
+              <Contact />
             </div>
           </div>
         </div>

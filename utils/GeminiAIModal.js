@@ -4,8 +4,10 @@ const {
   HarmCategory,
   HarmBlockThreshold,
 } = require("@google/generative-ai");
+require("server-only");
 
-const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+const apiKey = process.env.NEXT_GEMINI_API_KEY;
+if (!apiKey) throw new Error("NEXT_GEMINI_API_KEY is not configured");
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
@@ -31,7 +33,16 @@ const safetySettings = [
   },
 ];
 
-export const chatSession = model.startChat({
-  generationConfig,
-  safetySettings
-});
+export async function generateInterviewContent(prompt) {
+  const chatSession = model.startChat({ generationConfig, safetySettings });
+  const result = await chatSession.sendMessage(prompt);
+  return result.response.text();
+}
+
+export async function transcribeAudio(audioBase64, mimeType) {
+  const result = await model.generateContent([
+    "Transcribe this audio accurately. Return only the spoken words.",
+    { inlineData: { data: audioBase64, mimeType } },
+  ]);
+  return result.response.text();
+}

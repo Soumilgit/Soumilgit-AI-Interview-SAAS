@@ -12,14 +12,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { chatSession } from "@/utils/GeminiAIModal";
 import { LoaderCircle } from "lucide-react";
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
-import { v4 as uuidv4 } from "uuid";
-import { useUser } from "@clerk/nextjs";
-import moment from "moment";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const AddNewInterview = () => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -27,55 +22,20 @@ const AddNewInterview = () => {
   const [jobDesc, setJobDesc] = useState();
   const [jobExperience, setJobExperience] = useState();
   const [loading, setLoading] = useState(false);
-  const [jsonResponse, setJsonResponse] = useState([]);
-  const { user } = useUser();
   const router = useRouter();
 
   const onSubmit = async (e) => {
-    setLoading(true);
     e.preventDefault();
-    console.log(jobPosition, jobDesc, jobExperience);
-
-    const InputPrompt = `
-      Job Positions: ${jobPosition}, 
-      Job Description: ${jobDesc}, 
-      Years of Experience: ${jobExperience}. 
-      Based on this information, please provide 5 interview questions with answers in JSON format, ensuring "Question" and "Answer" are fields in the JSON.
-    `;
-
-    const result = await chatSession.sendMessage(InputPrompt);
-    const MockJsonResp = result.response
-      .text()
-      .replace("```json", "")
-      .replace("```", "")
-      .trim();
-    console.log(JSON.parse(MockJsonResp));
-    setJsonResponse(MockJsonResp);
-
-    if (MockJsonResp) {
-      const resp = await db
-        .insert(MockInterview)
-        .values({
-          mockId: uuidv4(),
-          jsonMockResp: MockJsonResp,
-          jobPosition: jobPosition,
-          jobDesc: jobDesc,
-          jobExperience: jobExperience,
-          createdBy: user?.primaryEmailAddress?.emailAddress,
-          createdAt: moment().format("YYYY-MM-DD"),
-        })
-        .returning({ mockId: MockInterview.mockId });
-        
-      console.log("Inserted ID:", resp);
-
-      if (resp) {
-        setOpenDialog(false);
-        router.push("/dashboard/interview/" + resp[0]?.mockId);
-      }
-    } else {
-      console.log("ERROR");
-    }
-    setLoading(false);
+    setLoading(true);
+    try {
+      const response = await fetch("/api/interviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ jobPosition, jobDesc, jobExperience }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Unable to create interview");
+      setOpenDialog(false);
+      router.push("/dashboard/interview/" + data.mockId);
+    } catch (error) {
+      toast.error(error.message || "Unable to create interview");
+    } finally { setLoading(false); }
   };
 
   return (

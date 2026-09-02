@@ -2,19 +2,17 @@
 
 const pricingPlans = [
   {
-    id: 'basic',
-    link: 'https://buy.stripe.com/test_00w4gzdZM0qV7HvbgN53O00',
+    id: 'monthly',
+    link: '/api/billing/monthly',
     price: 7.99,
-    priceId: 'price_1RNfwoDR8rWHnLWcYoadcR6G',
     duration: 'Monthly',
     description: 'Perfect for individual learners getting started',
     popular: false
   },
   {
-    id: 'premium',
-    link: 'https://buy.stripe.com/test_5kQaEXcVIflP1j7esZ53O01',
+    id: 'yearly',
+    link: '/api/billing/yearly',
     price: 49.00,
-    priceId: 'price_1RNfxmDR8rWHnLWchWJGLZ6q',
     duration: 'Yearly',
     description: 'Best for regular learners and professionals',
     popular: false

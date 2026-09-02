@@ -1,31 +1,24 @@
 "use client";
 import { useUser } from "@clerk/nextjs";
 import React, { useEffect, useState } from "react";
-import { db } from "@/utils/db";
-import { MockInterview } from "@/utils/schema";
-import { desc, eq } from "drizzle-orm";
 import InterviewItemCard from "./InterviewItemCard";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const InterviewList = () => {
-  const { user } = useUser();
+  const { user, isLoaded } = useUser();
   const [interviewList, setInterviewList] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    user && GetInterviewList();
-  }, [user]);
+    if (isLoaded && user) GetInterviewList();
+    if (isLoaded && !user) setLoading(false);
+  }, [user, isLoaded]);
 
   const GetInterviewList = async () => {
     try {
-      const result = await db
-        .select()
-        .from(MockInterview)
-        .where(
-          eq(MockInterview.createdBy, user?.primaryEmailAddress?.emailAddress)
-        )
-        .orderBy(desc(MockInterview.id));
-      setInterviewList(result);
+      const response = await fetch("/api/interviews", { cache: "no-store" });
+      if (!response.ok) throw new Error("Unable to load interviews");
+      setInterviewList(await response.json());
     } finally {
       setLoading(false);
     }

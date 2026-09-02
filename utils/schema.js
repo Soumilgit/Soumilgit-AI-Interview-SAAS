@@ -46,3 +46,16 @@ export const Newsletter = pgTable('newsletter',{
     newMessage: text('newMessage'),
     createdAt: varchar('createdAt')
 })
+
+export const Subscription = pgTable('subscription', {
+    id: serial('id').primaryKey(),
+    clerkUserId: varchar('clerkUserId').notNull(),
+    userEmail: varchar('userEmail').notNull(),
+    plan: varchar('plan').notNull(),
+    status: varchar('status').notNull(),
+    stripeSessionId: varchar('stripeSessionId').notNull(),
+    amountTotal: varchar('amountTotal'),
+    currency: varchar('currency'),
+    createdAt: varchar('createdAt').notNull(),
+    updatedAt: varchar('updatedAt').notNull(),
+})

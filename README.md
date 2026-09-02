@@ -61,26 +61,6 @@ root
 
 ---
 
-## Admin Panel, DB & Backend Logs
-
-**1.Clerk**
-
-![Clerk admin dashboard](https://github.com/user-attachments/assets/1ce19d50-0002-4ea0-8379-16b3d105db91)
-
-
-**2.NeonDB (all 4 tables)**
-
-![Mock Interview](https://github.com/user-attachments/assets/d8d99fef-a377-4aeb-8d40-023efa1faa36)
-![Newsletter](https://github.com/user-attachments/assets/b7752441-daa2-4186-bcec-22a57b4fdd2e)
-![Question](https://github.com/user-attachments/assets/7bfdb30f-141c-47f3-9721-c295e10ad104)
-![User Answer](https://github.com/user-attachments/assets/1ee420ae-e489-4903-9de2-195aab059251)
-
----
-
-## Stripe Test Checkout Flow
-https://github.com/user-attachments/assets/2a9ffc74-56d0-4e00-9703-9e4e310d1c75
-
----
 
 ## Local Development
 
@@ -95,18 +75,18 @@ npm install
 Create a `.env.local` file:
 ```bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
+NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT=10
 CLERK_SECRET_KEY=
-NEXT_PUBLIC_CLERK_SIGN_IN_URL=
-NEXT_PUBLIC_CLERK_SIGN_UP_URL=
-NEXT_PUBLIC_DRIZZLE_DB_URL=
-NEXT_PUBLIC_GEMINI_API_KEY=
-NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT=5
-NEXT_PUBLIC_INFORMATION="Enable your video & microphone, webcam recommended."
-NEXT_PUBLIC_QUESTION_NOTE="You can move to next qs. by clicking on 'Next Question' button."
+NEXT_DRIZZLE_DB_URL=
+NEXT_GEMINI_API_KEY=
+NEXT_PROMPT="You are a professional interview coach..."
+NEXT_STRIPE_MONTHLY_PAYMENT_LINK=
+NEXT_STRIPE_YEARLY_PAYMENT_LINK=
+NEXT_STRIPE_WEBHOOK_SECRET=
 ```
 
 **3. Run Locally**
-Configure Clerk & Drizzle locally, then
+Configure Clerk plus the server-only database and AI variables locally, then
 ```bash
 npm run dev
 ```
@@ -121,7 +101,7 @@ docker compose up --build
 ## Production Deployment
 Use platforms like **Vercel**, **Render**, **Railway** or **Docker-based VPS** .
 
-Securely add `.env.local` variables & `drizzle.config.js` to production environment
+Add the variables to your hosting provider. Only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` is public; never expose the database URL or Gemini API key.
 
 ---
 
