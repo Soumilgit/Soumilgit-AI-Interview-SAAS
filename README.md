@@ -1,66 +1,65 @@
-# SimulateRecruitAI - Your AI Interview Mocker
+# SimulateRecruitAI
 
-An end-to-end interview preparation platform powered by **Next.js**, **Gemini AI**, **Drizzle + NeonDB** and **Clerk** for authentication. Designed to streamline & simulate real-world interviews with dynamic question generation, feedback mechanisms & recording features.
+An AI-powered interview practice platform for generating role-specific questions, recording answers and reviewing structured feedback. It uses a responsive Next.js interface with server-protected AI, data and payment flows.
 
----
+## Highlights
 
-# Architecture
+- Adaptive mock interviews: five baseline questions plus an optional 2-3-question follow-up round, capped at ten.
+- Gemini-powered question generation, audio transcription, 1-10 scoring and actionable feedback.
+- Saved interview history, custom practice sets and attempt-based feedback grouped in blocks of five.
+- Clerk authentication, ownership checks, rate limits, input validation and prompt-injection guardrails.
+- Stripe Monthly/Yearly Payment Links with signed webhooks and database-backed subscription records.
+- Responsive light, dark, and system themes with a mobile-ready landing page and dashboard.
 
-![image](https://github.com/user-attachments/assets/e3cb2ee2-f0d0-430f-af16-17900b5a21cb)
+## Architecture
 
----
+```mermaid
+graph TD
+  A[Browser] --> B[Next.js App]
+  B --> C[Protected Dashboard]
+  B --> D[Authenticated API Routes]
+  C --> E[Clerk Authentication]
+  D --> F[Gemini AI - Interview Questions]
+  F --> G[Transcription and Feedback]
+  D --> H[Stripe Payment Links]
+  H --> I[Stripe Webhook]
+  D --> J[Neon Postgres and Drizzle]
+  I --> J
+```
 
-##  Features
-
--  **Authentication** with Clerk
--  **AI-Driven** Interview Generation & Feedback (via Gemini AI)
--  **Custom Questions** and Interview Creation
--  **Interview Simulation**: Question + Record Answer + AI Feedback
--  **Dashboard** to Manage Interviews, Questions & Progress
--  **Stripe Payments** Payment Gateway
--  **Fully Dockerized** for Deployment
--  Built with **React**, **TailwindCSS**, **Radix UI** and **Next.js App Router**
-
----
+Browser code never imports the database client or Gemini key. Protected API routes validate the current Clerk user before reading or writing user-owned data. Stripe verifies completed checkout events through a signed webhook before subscriptions are stored.
 
 ## Tech Stack
 
-| Purpose              | Tech                      |
-|----------------------|---------------------------|
-| Frontend Framework   | Next.js+React (App Router)|
-| Styling              | TailWindCSS               |
-| Component System     | Custom + Radix UI         |
-| Authentication       | Clerk                     |
-| Database             | Neon (Postgres) + Drizzle |
-| AI Integration       | Gemini AI (Google)        |
-| Payments             | Stripe (USD only)         |
-| Containerization     | Docker                    |
-| Deployment           | Vercel                    |
-
----
+| Area | Technology |
+|---|---|
+| App | Next.js 16, React 18 |
+| UI | Tailwind CSS, Radix UI, next-themes |
+| Auth | Clerk |
+| Data | Neon Postgres, Drizzle ORM |
+| AI | Gemini 3.5 Flash-Lite |
+| Payments | Stripe Payment Links and webhooks |
+| Deployment | Vercel or Docker |
 
 ## Project Structure
-```bash
-root
-├─ app/                # App directory (Next.js App Router)
-│  ├─ auth/            # Clerk-based Sign-in & Sign-up
-│  ├─ dashboard/       # Main dashboard with modular components
-│  ├─ interview/       # Interview flow: start, feedback, details
-│  ├─ pyq/             # Previous Year Questions
-│  └─ upgrade/         # Stripe payment upgrade page
-├─ components/         # Shared UI Components (button, card, modal)
-├─ utils/              # Gemini modal, DB logic, schema
-├─ public/             # Static assets
-├─ Dockerfile          # Docker build
-├─ compose.yaml        # Docker Compose (if multi-service setup)
-├─ next.config.mjs     # Next.js config
-├─middleware.js        # Backend middlewares
-├─ package.json        # Dependencies
-└─ README.md
+
+```text
+app/
+  api/          Server-only AI, data, billing, subscription and webhook routes
+  dashboard/    Protected interview, practice, feedback and upgrade screens
+  _components/  Landing-page components
+components/     Shared UI primitives
+utils/          Database, Gemini, prompt, auth, rate-limit and schema utilities
+proxy.js        Clerk session integration
 ```
 
----
+## Security Notes
 
+- Keep `NEXT_DRIZZLE_DB_URL`, `NEXT_GEMINI_API_KEY`, `NEXT_PROMPT` and Stripe secrets server-only.
+- Only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and intentional client UI settings use `NEXT_PUBLIC_`.
+- Configure Stripe events for `checkout.session.completed` and `checkout.session.async_payment_succeeded` at `/api/stripe/webhook`.
+
+---
 
 ## Local Development
 
@@ -111,4 +110,4 @@ Add the variables to your hosting provider. Only `NEXT_PUBLIC_CLERK_PUBLISHABLE_
 2. Create a new branch: `git checkout -b your-feature-name`  
 3. Make changes, test locally, then commit: `git commit -m "your message"`  
 4. Push to your fork: `git push origin your-feature-name`  
-5. Open a Pull Request — I’ll take it from there.  
+5. Open a Pull Request - I’ll take it from there.  
