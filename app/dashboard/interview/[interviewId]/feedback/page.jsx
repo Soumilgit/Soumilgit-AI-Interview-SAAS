@@ -3,11 +3,12 @@ import React, { useEffect, useMemo, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
-const Feedback = ({ params }) => {
+const Feedback = () => {
+  const { interviewId } = useParams();
   const router = useRouter(); const [feedbackList, setFeedbackList] = useState([]);
-  useEffect(() => { fetch(`/api/interviews/${params.interviewId}/answers`).then((response) => response.ok ? response.json() : []).then(setFeedbackList); }, [params.interviewId]);
+  useEffect(() => { if (interviewId) fetch(`/api/interviews/${interviewId}/answers`).then((response) => response.ok ? response.json() : []).then(setFeedbackList); }, [interviewId]);
   const attempts = useMemo(() => { const newest = [...feedbackList].reverse(); return Array.from({ length: Math.ceil(newest.length / 5) }, (_, index) => newest.slice(index * 5, index * 5 + 5)); }, [feedbackList]);
   const score = (attempt) => (attempt.reduce((sum, item) => sum + Math.min(10, Math.max(1, Number(item.rating) || 1)), 0) / attempt.length).toFixed(1);
   if (!feedbackList.length) return <div className="p-10"><h2 className="my-5 text-xl font-bold text-gray-500">No interview feedback record found.</h2><Button onClick={() => router.replace("/dashboard")}>Go Home</Button></div>;

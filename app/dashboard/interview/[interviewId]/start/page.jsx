@@ -5,18 +5,20 @@ import QuestionSection from "./_components/QuestionSection";
 import RecordAnswerSection from "./_components/RecordAnswerSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 
-const StartInterview = ({ params }) => {
+const StartInterview = () => {
+  const { interviewId } = useParams();
   const [interviewData, setInterviewData] = useState();
   const [mockInterviewQuestion, setMockInterviewQuestion] = useState();
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [loadingFollowUp, setLoadingFollowUp] = useState(false);
   useEffect(() => {
-    GetInterviewDetails();
-  }, []);
+    if (interviewId) GetInterviewDetails();
+  }, [interviewId]);
 
   const GetInterviewDetails = async () => {
-    const response = await fetch(`/api/interviews/${params.interviewId}`);
+    const response = await fetch(`/api/interviews/${interviewId}`);
     if (!response.ok) return;
     const interview = await response.json();
     const jsonMockResp = JSON.parse(interview.jsonMockResp);
@@ -69,14 +71,14 @@ const StartInterview = ({ params }) => {
             Next Question
           </Button>
         )}
-        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && mockInterviewQuestion?.length < (Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10) && (
+        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && mockInterviewQuestion?.length === 5 && (Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10) > 5 && (
           <Button onClick={continueAdaptiveInterview} disabled={loadingFollowUp}>{loadingFollowUp ? "Preparing follow-up questions..." : "Continue adaptive interview"}</Button>
         )}
-        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && mockInterviewQuestion?.length >= (Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10) && (
+        {activeQuestionIndex == mockInterviewQuestion?.length - 1 && (
           <Link
             href={"/dashboard/interview/" + interviewData?.mockId + "/feedback"}
           >
-            <Button>End Interview</Button>
+            <Button variant="outline">End Interview</Button>
           </Link>
         )}
       </div>

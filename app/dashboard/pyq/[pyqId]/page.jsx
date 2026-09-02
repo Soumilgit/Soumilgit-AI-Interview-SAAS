@@ -3,10 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
-const QuestionPracticePage = ({ params }) => {
+const QuestionPracticePage = () => {
+  const { pyqId } = useParams();
   const [questionData, setQuestionData] = useState();
   const [loading, setLoading] = useState(true);
   const router = useRouter();
@@ -14,7 +15,7 @@ const QuestionPracticePage = ({ params }) => {
   useEffect(() => {
     const loadQuestionSet = async () => {
       try {
-        const response = await fetch(`/api/questions/${params.pyqId}`);
+        const response = await fetch(`/api/questions/${pyqId}`);
         if (!response.ok) return;
         const questionSet = await response.json();
         setQuestionData(JSON.parse(questionSet.mockQuestionJsonResp).questions);
@@ -24,8 +25,8 @@ const QuestionPracticePage = ({ params }) => {
         setLoading(false);
       }
     };
-    loadQuestionSet();
-  }, [params.pyqId]);
+    if (pyqId) loadQuestionSet();
+  }, [pyqId]);
 
   return <div className="p-10 my-5">
     <div className="mb-6">

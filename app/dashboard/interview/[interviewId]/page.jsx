@@ -5,19 +5,20 @@ import { Button } from "@/components/ui/button";
 import Webcam from "react-webcam";
 import Link from "next/link";
 import { useContext } from 'react';
+import { useParams } from "next/navigation";
 import { WebCamContext } from "../../layout";
 
-const Interview = ({ params }) => {
+const Interview = () => {
+  const { interviewId } = useParams();
   const { webCamEnabled, setWebCamEnabled } = useContext(WebCamContext);
   const [interviewData, setInterviewData] = useState();
   // const [webCamEnabled, setWebCamEnebled] = useState(false);
   useEffect(() => {
-    console.log(params.interviewId);
-    GetInterviewDetails();
-  }, []);
+    if (interviewId) GetInterviewDetails();
+  }, [interviewId]);
   
   const GetInterviewDetails = async () => {
-    const response = await fetch(`/api/interviews/${params.interviewId}`);
+    const response = await fetch(`/api/interviews/${interviewId}`);
     if (!response.ok) return;
     setInterviewData(await response.json());
   };
@@ -77,7 +78,7 @@ const Interview = ({ params }) => {
         </div>
       </div>
       <div className="flex justify-center my-4 md:my-0 md:justify-end md:items-end">
-        <Link href={"/dashboard/interview/" + params.interviewId + "/start"}>
+        <Link href={"/dashboard/interview/" + interviewId + "/start"}>
           <Button>Start Interview</Button>
         </Link>
       </div>

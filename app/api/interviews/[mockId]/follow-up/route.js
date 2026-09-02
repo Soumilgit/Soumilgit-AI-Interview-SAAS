@@ -19,7 +19,9 @@ export async function POST(_request, { params }) {
   if (!interview) return NextResponse.json({ error: "Interview not found." }, { status: 404 })
   let questions; try { questions = JSON.parse(interview.jsonMockResp) } catch { return NextResponse.json({ error: "Interview questions are invalid." }, { status: 500 }) }
   const maxQuestionCount = Math.min(10, Math.max(5, Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10))
-  if (!Array.isArray(questions) || questions.length >= maxQuestionCount) return NextResponse.json({ questions, complete: true })
+  // One adaptive round is deliberate: five baseline answers, then 2–3 targeted
+  // follow-ups. This keeps sessions realistic without extending past the cap.
+  if (!Array.isArray(questions) || questions.length > 5 || questions.length >= maxQuestionCount) return NextResponse.json({ questions, complete: true })
   const answers = await db.select().from(UserAnswer).where(and(eq(UserAnswer.mockIdRef, mockId), eq(UserAnswer.userEmail, email)))
   if (answers.length < 5) return NextResponse.json({ error: "Complete five answers before continuing." }, { status: 400 })
   const count = Math.min(maxQuestionCount - questions.length, randomInt(2, 4))
