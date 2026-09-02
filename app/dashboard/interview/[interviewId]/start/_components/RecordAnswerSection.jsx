@@ -15,16 +15,18 @@ const RecordAnswerSection = ({ mockInterviewQuestion, activeQuestionIndex, inter
   const mediaRecorderRef = useRef(null);
   const chunksRef = useRef([]);
   const submittedRef = useRef(false);
+  const recordingTimeoutRef = useRef(null);
   const endpoint = `/api/interviews/${interviewData?.mockId}/answers`;
 
   useEffect(() => { if (!isRecording && userAnswer.length > 10 && !submittedRef.current) updateUserAnswer(); }, [userAnswer, isRecording]);
   const startRecording = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      mediaRecorderRef.current = new MediaRecorder(stream); chunksRef.current = [];
+      mediaRecorderRef.current = new MediaRecorder(stream, { audioBitsPerSecond: 24000 }); chunksRef.current = [];
       mediaRecorderRef.current.ondataavailable = (event) => { if (event.data.size > 0) chunksRef.current.push(event.data); };
-      mediaRecorderRef.current.onstop = async () => { stream.getTracks().forEach((track) => track.stop()); await transcribeAudio(new Blob(chunksRef.current, { type: "audio/webm" })); };
+      mediaRecorderRef.current.onstop = async () => { if (recordingTimeoutRef.current) clearTimeout(recordingTimeoutRef.current); stream.getTracks().forEach((track) => track.stop()); await transcribeAudio(new Blob(chunksRef.current, { type: mediaRecorderRef.current.mimeType || "audio/webm" })); };
       mediaRecorderRef.current.start(); setIsRecording(true);
+      recordingTimeoutRef.current = setTimeout(() => { if (mediaRecorderRef.current?.state === "recording") { toast.info("Recording stopped after 3 minutes 30 seconds to keep transcription reliable."); stopRecording(); } }, 210000);
     } catch { toast.error("Please allow microphone access to record an answer."); }
   };
   const stopRecording = () => { if (mediaRecorderRef.current && isRecording) { mediaRecorderRef.current.stop(); setIsRecording(false); } };
@@ -32,8 +34,9 @@ const RecordAnswerSection = ({ mockInterviewQuestion, activeQuestionIndex, inter
     setLoading(true);
     try {
       const audio = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onloadend = () => resolve(String(reader.result).split(",")[1]); reader.onerror = reject; reader.readAsDataURL(audioBlob); });
-      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "transcribe", audio, mimeType: "audio/webm" }) });
-      const data = await response.json(); if (!response.ok) throw new Error(data.error);
+      if (audio.length > 4_000_000) throw new Error("Recording is too large. Please keep each answer under 3 minutes 30 seconds.");
+      const response = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action: "transcribe", audio, mimeType: audioBlob.type || "audio/webm" }) });
+      const data = await response.json().catch(() => ({})); if (!response.ok) throw new Error(data.error || "Transcription service is unavailable.");
       setUserAnswer(data.transcription.trim());
     } catch (error) { toast.error(error.message || "Unable to transcribe audio."); setLoading(false); }
   };

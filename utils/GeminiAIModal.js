@@ -11,7 +11,7 @@ if (!apiKey) throw new Error("NEXT_GEMINI_API_KEY is not configured");
 const genAI = new GoogleGenerativeAI(apiKey);
 
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash-lite",
+  model: "gemini-3.5-flash-lite",
 });
 
 const generationConfig = {
