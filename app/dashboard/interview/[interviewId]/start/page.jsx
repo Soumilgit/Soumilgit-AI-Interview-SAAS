@@ -6,6 +6,7 @@ import RecordAnswerSection from "./_components/RecordAnswerSection";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { normalizeInterviewQuestions } from "@/utils/interview-questions";
 
 const StartInterview = () => {
   const { interviewId } = useParams();
@@ -13,6 +14,7 @@ const StartInterview = () => {
   const [mockInterviewQuestion, setMockInterviewQuestion] = useState();
   const [activeQuestionIndex, setActiveQuestionIndex] = useState(0);
   const [loadingFollowUp, setLoadingFollowUp] = useState(false);
+  const [loadError, setLoadError] = useState("");
   useEffect(() => {
     if (interviewId) GetInterviewDetails();
   }, [interviewId]);
@@ -21,9 +23,9 @@ const StartInterview = () => {
     const response = await fetch(`/api/interviews/${interviewId}`);
     if (!response.ok) return;
     const interview = await response.json();
-    const jsonMockResp = JSON.parse(interview.jsonMockResp);
-    console.log(jsonMockResp);
-    setMockInterviewQuestion(jsonMockResp);
+    const questions = normalizeInterviewQuestions(interview.jsonMockResp);
+    if (!questions.length) setLoadError("This interview's saved questions could not be read.");
+    setMockInterviewQuestion(questions);
     setInterviewData(interview);
   };
 
@@ -33,7 +35,7 @@ const StartInterview = () => {
       const response = await fetch(`/api/interviews/${interviewData?.mockId}/follow-up`, { method: "POST" });
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Unable to generate follow-up questions");
-      setMockInterviewQuestion(data.questions);
+      setMockInterviewQuestion(normalizeInterviewQuestions(data.questions));
       if (data.questions.length > activeQuestionIndex + 1) setActiveQuestionIndex(activeQuestionIndex + 1);
     } catch (error) {
       alert(error.message || "Unable to continue the interview.");
@@ -42,6 +44,7 @@ const StartInterview = () => {
 
   return (
     <div>
+      {loadError && <p className="mx-5 mt-5 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">{loadError}</p>}
       <div className="grid grid-cols-1 md:grid-cols-2 my-10">
         {/* Questin Section */}
         <QuestionSection

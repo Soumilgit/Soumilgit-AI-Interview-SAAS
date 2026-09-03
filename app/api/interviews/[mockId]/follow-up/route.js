@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server"
 import { and, eq } from "drizzle-orm"
 import { randomInt, randomUUID } from "crypto"
+import { normalizeInterviewQuestions } from "@/utils/interview-questions"
 import { db } from "@/utils/db"
 import { MockInterview, UserAnswer } from "@/utils/schema"
 import { getAuthenticatedEmail } from "@/utils/server-user"
@@ -17,7 +18,8 @@ export async function POST(_request, { params }) {
   const { mockId } = await params
   const [interview] = await db.select().from(MockInterview).where(and(eq(MockInterview.mockId, mockId), eq(MockInterview.createdBy, email)))
   if (!interview) return NextResponse.json({ error: "Interview not found." }, { status: 404 })
-  let questions; try { questions = JSON.parse(interview.jsonMockResp) } catch { return NextResponse.json({ error: "Interview questions are invalid." }, { status: 500 }) }
+  const questions = normalizeInterviewQuestions(interview.jsonMockResp)
+  if (!questions.length) return NextResponse.json({ error: "Interview questions are invalid." }, { status: 500 })
   const maxQuestionCount = Math.min(10, Math.max(5, Number(process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT) || 10))
   // One adaptive round is deliberate: five baseline answers, then 2–3 targeted
   // follow-ups. This keeps sessions realistic without extending past the cap.
