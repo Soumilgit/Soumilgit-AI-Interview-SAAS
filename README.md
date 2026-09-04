@@ -10,6 +10,8 @@ An AI-powered interview practice platform for generating role-specific questions
 - Clerk authentication, ownership checks, rate limits, input validation and prompt-injection guardrails.
 - Stripe Monthly/Yearly Payment Links with signed webhooks and database-backed subscription records.
 - Responsive light, dark, and system themes with a mobile-ready landing page and dashboard.
+- Landing content renders immediately without scroll-reveal delays; primary landing CTAs retain fixed purple backgrounds and white text in every theme.
+- Mobile dashboard navigation uses a high-contrast menu control, and the feedback screen keeps its dashboard return action clearly positioned above attempt details.
 
 ## Architecture
 
@@ -33,7 +35,7 @@ Browser code never imports the database client or Gemini key. Protected API rout
 
 | Area | Technology |
 |---|---|
-| App | Next.js 16, React 18 |
+| App | Next.js 16.3.4, React 18 |
 | UI | Tailwind CSS, Radix UI, next-themes |
 | Auth | Clerk |
 | Data | Neon Postgres, Drizzle ORM |
@@ -58,6 +60,7 @@ proxy.js        Clerk session integration
 - Keep `NEXT_DRIZZLE_DB_URL`, `NEXT_GEMINI_API_KEY`, `NEXT_PROMPT` and Stripe secrets server-only.
 - Only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and intentional client UI settings use `NEXT_PUBLIC_`.
 - Configure Stripe events for `checkout.session.completed` and `checkout.session.async_payment_succeeded` at `/api/stripe/webhook`.
+- Recent dependency security maintenance includes Next.js `16.3.4`, NanoID `3.3.18`, Sucrase `3.35.1`, and an override that pins vulnerable Picomatch v2 consumers to the patched `2.3.2` release.
 
 ---
 
