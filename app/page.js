@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useState } from "react"
 import { FaGithub, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa"
 import Contact from "./_components/Contact"
 import { ModeToggle } from "@/components/ModeToggle"
@@ -22,18 +22,7 @@ const faqs = [
 ]
 
 function Reveal({ children, className = "" }) {
-  const ref = useRef(null)
-  const [visible, setVisible] = useState(false)
-  useEffect(() => {
-    const node = ref.current
-    if (!node) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setVisible(true); observer.unobserve(node) }
-    }, { threshold: 0.12, rootMargin: "0px 0px -36px 0px" })
-    observer.observe(node)
-    return () => observer.disconnect()
-  }, [])
-  return <div ref={ref} className={`${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"} transition-all duration-700 ${className}`}>{children}</div>
+  return <div className={className}>{children}</div>
 }
 
 function DashboardPreview() {
