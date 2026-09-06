@@ -204,10 +204,12 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
     let pollId;
     let closeId;
     let timeoutId;
+    let verificationTimeoutId;
     const stopWatching = () => {
       window.clearInterval(pollId);
       window.clearInterval(closeId);
       window.clearTimeout(timeoutId);
+      window.clearTimeout(verificationTimeoutId);
     };
     const finish = (notice, closeCheckout = false) => {
       if (finished) return;
@@ -245,14 +247,20 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
     closeId = window.setInterval(() => {
       if (!checkoutWindow.closed || finished || checkoutClosed) return;
       checkoutClosed = true;
-      setProcessingMessage('Checking whether Stripe confirmed the payment...');
+      window.clearInterval(closeId);
+      setProcessingMessage('Checkout window closed. Waiting for Stripe to confirm the payment...');
       window.setTimeout(async () => {
-        if (!(await confirmSubscription())) finish({ type: 'info', message: 'Checkout was closed without a confirmed payment. Your current plan has not changed.' });
+        await confirmSubscription();
       }, 2_000);
     }, 500);
     timeoutId = window.setTimeout(async () => {
-      if (!(await confirmSubscription())) finish({ type: 'info', message: 'No payment has been confirmed yet. Your current plan remains unchanged.' });
+      if (!(await confirmSubscription())) setProcessingMessage('Payment confirmation is taking longer than usual. Keep this window open while we verify with Stripe...');
     }, 30_000);
+    verificationTimeoutId = window.setTimeout(async () => {
+      if (!(await confirmSubscription())) {
+        finish({ type: 'info', message: 'Stripe has not confirmed a payment yet. Your current plan remains unchanged.' });
+      }
+    }, 120_000);
   };
 
   const features = [
@@ -285,7 +293,7 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
 
         {paymentNotice && !processingPlan && (
           <div className={`mb-8 rounded-xl p-5 text-center ${paymentNotice.type === 'success' ? 'bg-green-600 text-white' : paymentNotice.type === 'error' ? 'bg-red-600 text-white' : 'bg-muted text-foreground'}`} role="status">
-            <p className="font-semibold">{paymentNotice.type === 'success' ? 'PAYMENT CONFIRMED' : 'CHECKOUT NOT COMPLETED'}</p>
+            <p className="font-semibold">{paymentNotice.type === 'success' ? 'PAYMENT CONFIRMED' : paymentNotice.type === 'error' ? 'CHECKOUT ERROR' : 'CHECKOUT NOT YET CONFIRMED'}</p>
             <p className="mt-1 text-sm opacity-90">{paymentNotice.message}</p>
           </div>
         )}
