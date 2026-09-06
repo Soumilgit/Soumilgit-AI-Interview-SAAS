@@ -8,7 +8,7 @@ An AI-powered interview practice platform for generating role-specific questions
 - Gemini-powered question generation, audio transcription, 1-10 scoring and actionable feedback.
 - Saved interview history, custom practice sets and attempt-based feedback grouped in blocks of five.
 - Clerk authentication, ownership checks, rate limits, input validation and prompt-injection guardrails.
-- Stripe Monthly/Yearly Payment Links with signed webhooks and database-backed subscription records.
+- Stripe Monthly/Yearly Payment Links with signed-webhook reconciliation, database-backed subscriptions, and resilient checkout-status handling.
 - Responsive light, dark, and system themes with a mobile-ready landing page and dashboard.
 - Landing content renders immediately without scroll-reveal delays; primary landing CTAs retain fixed purple backgrounds and white text in every theme.
 - Mobile dashboard navigation uses a high-contrast menu control, and the feedback screen keeps its dashboard return action clearly positioned above attempt details.
@@ -29,7 +29,7 @@ graph TD
   I --> J
 ```
 
-Browser code never imports the database client or Gemini key. Protected API routes validate the current Clerk user before reading or writing user-owned data. Stripe verifies completed checkout events through a signed webhook before subscriptions are stored.
+Browser code never imports the database client or Gemini key. Protected API routes validate the current Clerk user before reading or writing user-owned data. Stripe verifies completed checkout events through a signed webhook before subscriptions are stored; the Upgrade UI polls that server-owned record, so it activates only verified payments and handles closed checkout windows safely.
 
 ## Tech Stack
 

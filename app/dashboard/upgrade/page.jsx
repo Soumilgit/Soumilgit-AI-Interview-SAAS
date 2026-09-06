@@ -205,11 +205,14 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
     let closeId;
     let timeoutId;
     let verificationTimeoutId;
+    let successTimeoutId;
+    let paymentConfirmed = false;
     const stopWatching = () => {
       window.clearInterval(pollId);
       window.clearInterval(closeId);
       window.clearTimeout(timeoutId);
       window.clearTimeout(verificationTimeoutId);
+      window.clearTimeout(successTimeoutId);
     };
     const finish = (notice, closeCheckout = false) => {
       if (finished) return;
@@ -222,9 +225,16 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
       setPaymentNotice(notice);
     };
     const confirmSubscription = async () => {
+      if (paymentConfirmed) return true;
       const subscription = await refreshSubscription();
       if (subscription?.isSubscribed && subscription.plan === planId) {
-        finish({ type: 'success', message: `Payment confirmed. Your ${getPlanDetails(planId).name} plan is now active.` }, true);
+        paymentConfirmed = true;
+        window.clearInterval(pollId);
+        window.clearInterval(closeId);
+        setProcessingMessage('Payment confirmed. Returning to your upgraded plan...');
+        successTimeoutId = window.setTimeout(() => {
+          finish({ type: 'success', message: `Payment confirmed. Your ${getPlanDetails(planId).name} plan is now active.` }, true);
+        }, 3_000);
         return true;
       }
       return false;
