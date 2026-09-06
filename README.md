@@ -9,9 +9,8 @@ An AI-powered interview practice platform for generating role-specific questions
 - Saved interview history, custom practice sets and attempt-based feedback grouped in blocks of five.
 - Clerk authentication, ownership checks, rate limits, input validation and prompt-injection guardrails.
 - Stripe Monthly/Yearly Payment Links with signed-webhook reconciliation, database-backed subscriptions, and resilient checkout-status handling.
-- Responsive light, dark, and system themes with a mobile-ready landing page and dashboard.
+- Responsive, system-aware light and dark themes; manual choices are scoped to the current browser session.
 - Landing content renders immediately without scroll-reveal delays; primary landing CTAs retain fixed purple backgrounds and white text in every theme.
-- Mobile dashboard navigation uses a high-contrast menu control, and the feedback screen keeps its dashboard return action clearly positioned above attempt details.
 
 ## Architecture
 

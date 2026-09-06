@@ -18,6 +18,24 @@ export default function RootLayout({ children }) {
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+                (function () {
+                  var themeKey = 'simulaterecruitai-theme';
+                  var sessionKey = themeKey + '-session';
+                  try {
+                    // Theme overrides are limited to this browser tab/window.
+                    // A newly opened session always starts from the OS/browser preference.
+                    if (!sessionStorage.getItem(sessionKey)) {
+                      localStorage.removeItem(themeKey);
+                      sessionStorage.setItem(sessionKey, 'active');
+                    }
+                  } catch (_) {}
+                })();
+              `,
+            }}
+          />
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link
@@ -26,7 +44,13 @@ export default function RootLayout({ children }) {
           />
         </head>
         <body className={`${inter.className} antialiased`}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="simulaterecruitai-theme"
+          >
             <Toaster position="top-center" richColors closeButton />
             {children}
             <Analytics />
