@@ -250,8 +250,17 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
       window.clearInterval(closeId);
       setProcessingMessage('Checkout window closed. Waiting for Stripe to confirm the payment...');
       window.setTimeout(async () => {
-        await confirmSubscription();
-      }, 2_000);
+        if (await confirmSubscription()) return;
+
+        // Do not make an abandoned checkout look like an indefinitely active payment.
+        // The existing poll remains active briefly in case Stripe's webhook arrives late.
+        setProcessingPlan(null);
+        setProcessingMessage('Payment in Progress...');
+        setPaymentNotice({
+          type: 'info',
+          message: 'Checkout was closed and no payment has been confirmed yet. Your plan will update automatically if Stripe confirms it shortly.'
+        });
+      }, 3_000);
     }, 500);
     timeoutId = window.setTimeout(async () => {
       if (!(await confirmSubscription())) setProcessingMessage('Payment confirmation is taking longer than usual. Keep this window open while we verify with Stripe...');
@@ -260,7 +269,7 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
       if (!(await confirmSubscription())) {
         finish({ type: 'info', message: 'Stripe has not confirmed a payment yet. Your current plan remains unchanged.' });
       }
-    }, 120_000);
+    }, 90_000);
   };
 
   const features = [
