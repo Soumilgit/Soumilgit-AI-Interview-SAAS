@@ -13,6 +13,7 @@ const Upgrade = () => {
   const [subscriptionStatus, setSubscriptionStatus] = useState(null);
   const [processingPlan, setProcessingPlan] = useState(null);
   const [processingMessage, setProcessingMessage] = useState('Payment in Progress...');
+  const [paymentNotice, setPaymentNotice] = useState(null);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
   useEffect(() => {
@@ -77,6 +78,16 @@ const Upgrade = () => {
     }
   }, [user]);
 
+  // Stripe redirects the checkout tab here after a successful payment. Return
+  // focus to the original upgrade tab, which verifies the webhook-backed plan.
+  useEffect(() => {
+    if (!window.opener) return;
+    window.opener.postMessage({ type: 'stripe-checkout-return' }, window.location.origin);
+    window.opener.focus();
+    const closeTimer = window.setTimeout(() => window.close(), 300);
+    return () => window.clearTimeout(closeTimer);
+  }, []);
+
   // Handle escape key to close modal
   useEffect(() => {
     const handleEscapeKey = (event) => {
@@ -94,6 +105,17 @@ const Upgrade = () => {
     };
   }, [isContactModalOpen]);
 
+  const refreshSubscription = async () => {
+    try {
+      const response = await fetch('/api/subscription', { cache: 'no-store' });
+      const subscription = response.ok ? await response.json() : null;
+      setSubscriptionStatus(subscription);
+      return subscription;
+    } catch {
+      return null;
+    }
+  };
+
   const isCurrentPlan = (planId) => {
     return subscriptionStatus?.isSubscribed && subscriptionStatus.plan === planId && !subscriptionStatus?.requiresRefresh;
   };
@@ -106,7 +128,7 @@ const Upgrade = () => {
     return plans[plan] || plans.monthly;
   };
 
-  // Handle payment button click - mark as subscribed after realistic payment time
+  /* Legacy client-only payment simulation removed. Stripe webhook status is authoritative.
   const handlePaymentClick = (planId, paymentUrl) => {
     const userEmail = user?.primaryEmailAddress?.emailAddress;
     if (!userEmail) {
@@ -179,6 +201,76 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
     }, 60000); // 60 seconds (1 minute) - gives ample time for payment completion and Stripe success page
   };
 
+  */
+  const beginVerifiedCheckout = (planId, paymentUrl) => {
+    if (!user) {
+      alert('Please log in to subscribe to a plan.');
+      return;
+    }
+
+    let finished = false;
+    let returnedFromCheckout = false;
+    let checkoutClosed = false;
+    let pollId;
+    let closeId;
+    let timeoutId;
+    const stopWatching = () => {
+      window.clearInterval(pollId);
+      window.clearInterval(closeId);
+      window.clearTimeout(timeoutId);
+      window.removeEventListener('message', handleCheckoutReturn);
+    };
+    const finish = (notice) => {
+      if (finished) return;
+      finished = true;
+      stopWatching();
+      setProcessingPlan(null);
+      setProcessingMessage('Payment in Progress...');
+      setPaymentNotice(notice);
+    };
+    const confirmSubscription = async () => {
+      const subscription = await refreshSubscription();
+      if (subscription?.isSubscribed && subscription.plan === planId) {
+        finish({ type: 'success', message: `Payment confirmed. Your ${getPlanDetails(planId).name} plan is now active.` });
+        return true;
+      }
+      return false;
+    };
+    const handleCheckoutReturn = (event) => {
+      if (event.origin !== window.location.origin || event.data?.type !== 'stripe-checkout-return') return;
+      returnedFromCheckout = true;
+      setProcessingMessage('Confirming your payment with Stripe...');
+      confirmSubscription();
+    };
+
+    setPaymentNotice(null);
+    setProcessingPlan(planId);
+    setProcessingMessage('Opening secure checkout...');
+    window.addEventListener('message', handleCheckoutReturn);
+
+    // No window dimensions: this is opened as a normal browser tab, not a popup.
+    const checkoutTab = window.open(paymentUrl, '_blank');
+    if (!checkoutTab) {
+      stopWatching();
+      setProcessingPlan(null);
+      setPaymentNotice({ type: 'error', message: 'Checkout could not be opened. Please allow a new tab and try again.' });
+      return;
+    }
+
+    pollId = window.setInterval(confirmSubscription, 2_000);
+    closeId = window.setInterval(() => {
+      if (!checkoutTab.closed || finished || returnedFromCheckout || checkoutClosed) return;
+      checkoutClosed = true;
+      setProcessingMessage('Checking whether Stripe confirmed the payment...');
+      window.setTimeout(async () => {
+        if (!(await confirmSubscription())) finish({ type: 'info', message: 'Checkout was closed without a confirmed payment. Your current plan has not changed.' });
+      }, 2_000);
+    }, 500);
+    timeoutId = window.setTimeout(async () => {
+      if (!(await confirmSubscription())) finish({ type: 'info', message: 'No payment has been confirmed yet. Your current plan remains unchanged.' });
+    }, 30_000);
+  };
+
   const features = [
     "Unlimited mock interviews",
     "AI-powered feedback",
@@ -199,11 +291,18 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
               <h2 className="text-2xl font-bold">PROCESSING PAYMENT</h2>
             </div>
             <p className="text-blue-100">
-              Please complete your payment in the Stripe window. Don't close this page!
+              Complete payment in the secure Stripe tab. Your plan changes only after Stripe confirms payment.
               <span className="block text-sm mt-1">
                 {processingMessage}
               </span>
             </p>
+          </div>
+        )}
+
+        {paymentNotice && !processingPlan && (
+          <div className={`mb-8 rounded-xl p-5 text-center ${paymentNotice.type === 'success' ? 'bg-green-600 text-white' : paymentNotice.type === 'error' ? 'bg-red-600 text-white' : 'bg-muted text-foreground'}`} role="status">
+            <p className="font-semibold">{paymentNotice.type === 'success' ? 'PAYMENT CONFIRMED' : 'CHECKOUT NOT COMPLETED'}</p>
+            <p className="mt-1 text-sm opacity-90">{paymentNotice.message}</p>
           </div>
         )}
 
@@ -293,9 +392,9 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
                   </Button>
                 ) : (
                   <Button
-                    onClick={() => handlePaymentClick(plan.id, plan.link)}
+                    onClick={() => beginVerifiedCheckout(plan.id, plan.link)}
                     size="lg"
-                    disabled={processingPlan === plan.id}
+                    disabled={Boolean(processingPlan)}
                     className={`w-full ${
                       processingPlan === plan.id
                         ? "bg-gray-400 text-white cursor-not-allowed"
