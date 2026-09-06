@@ -60,7 +60,7 @@ proxy.js        Clerk session integration
 - Keep `NEXT_DRIZZLE_DB_URL`, `NEXT_GEMINI_API_KEY`, `NEXT_PROMPT` and Stripe secrets server-only.
 - Only `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and intentional client UI settings use `NEXT_PUBLIC_`.
 - Configure Stripe events for `checkout.session.completed` and `checkout.session.async_payment_succeeded` at `/api/stripe/webhook`.
-- For each Stripe Payment Link, set **After payment → Redirect to a URL** to `https://YOUR_DOMAIN/dashboard/upgrade`. After verified checkout, this returns focus to the upgrade page and closes the checkout tab; the plan UI refreshes from the webhook-backed subscription record.
+- Keep Stripe Payment Links on their hosted confirmation page. The Upgrade page polls the webhook-backed subscription record; after a verified payment, it closes the Stripe popup and refreshes the current plan automatically.
 - Recent dependency security maintenance includes Next.js `16.3.4`, NanoID `3.3.18`, Sucrase `3.35.1`, and an override that pins vulnerable Picomatch v2 consumers to the patched `2.3.2` release.
 
 ---

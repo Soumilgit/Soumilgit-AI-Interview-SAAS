@@ -78,16 +78,6 @@ const Upgrade = () => {
     }
   }, [user]);
 
-  // Stripe redirects the checkout tab here after a successful payment. Return
-  // focus to the original upgrade tab, which verifies the webhook-backed plan.
-  useEffect(() => {
-    if (!window.opener) return;
-    window.opener.postMessage({ type: 'stripe-checkout-return' }, window.location.origin);
-    window.opener.focus();
-    const closeTimer = window.setTimeout(() => window.close(), 300);
-    return () => window.clearTimeout(closeTimer);
-  }, []);
-
   // Handle escape key to close modal
   useEffect(() => {
     const handleEscapeKey = (event) => {
@@ -209,8 +199,8 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
     }
 
     let finished = false;
-    let returnedFromCheckout = false;
     let checkoutClosed = false;
+    let checkoutWindow;
     let pollId;
     let closeId;
     let timeoutId;
@@ -218,12 +208,13 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
       window.clearInterval(pollId);
       window.clearInterval(closeId);
       window.clearTimeout(timeoutId);
-      window.removeEventListener('message', handleCheckoutReturn);
     };
-    const finish = (notice) => {
+    const finish = (notice, closeCheckout = false) => {
       if (finished) return;
       finished = true;
       stopWatching();
+      if (closeCheckout && checkoutWindow && !checkoutWindow.closed) checkoutWindow.close();
+      if (closeCheckout) window.focus();
       setProcessingPlan(null);
       setProcessingMessage('Payment in Progress...');
       setPaymentNotice(notice);
@@ -231,26 +222,19 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
     const confirmSubscription = async () => {
       const subscription = await refreshSubscription();
       if (subscription?.isSubscribed && subscription.plan === planId) {
-        finish({ type: 'success', message: `Payment confirmed. Your ${getPlanDetails(planId).name} plan is now active.` });
+        finish({ type: 'success', message: `Payment confirmed. Your ${getPlanDetails(planId).name} plan is now active.` }, true);
         return true;
       }
       return false;
-    };
-    const handleCheckoutReturn = (event) => {
-      if (event.origin !== window.location.origin || event.data?.type !== 'stripe-checkout-return') return;
-      returnedFromCheckout = true;
-      setProcessingMessage('Confirming your payment with Stripe...');
-      confirmSubscription();
     };
 
     setPaymentNotice(null);
     setProcessingPlan(planId);
     setProcessingMessage('Opening secure checkout...');
-    window.addEventListener('message', handleCheckoutReturn);
 
-    // No window dimensions: this is opened as a normal browser tab, not a popup.
-    const checkoutTab = window.open(paymentUrl, '_blank');
-    if (!checkoutTab) {
+    // Keep hosted Stripe Checkout in a separate popup window.
+    checkoutWindow = window.open(paymentUrl, '_blank', 'width=800,height=700');
+    if (!checkoutWindow) {
       stopWatching();
       setProcessingPlan(null);
       setPaymentNotice({ type: 'error', message: 'Checkout could not be opened. Please allow a new tab and try again.' });
@@ -259,7 +243,7 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
 
     pollId = window.setInterval(confirmSubscription, 2_000);
     closeId = window.setInterval(() => {
-      if (!checkoutTab.closed || finished || returnedFromCheckout || checkoutClosed) return;
+      if (!checkoutWindow.closed || finished || checkoutClosed) return;
       checkoutClosed = true;
       setProcessingMessage('Checking whether Stripe confirmed the payment...');
       window.setTimeout(async () => {
@@ -291,7 +275,7 @@ Click OK and then refresh the page (F5 or Ctrl+R) to activate your subscription.
               <h2 className="text-2xl font-bold">PROCESSING PAYMENT</h2>
             </div>
             <p className="text-blue-100">
-              Complete payment in the secure Stripe tab. Your plan changes only after Stripe confirms payment.
+              Complete payment in the secure Stripe window. Your plan changes only after Stripe confirms payment.
               <span className="block text-sm mt-1">
                 {processingMessage}
               </span>
