@@ -7,6 +7,7 @@ import { getAuthenticatedEmail } from "@/utils/server-user"
 import { isRateLimited } from "@/utils/rate-limit"
 import { buildPrompt } from "@/utils/prompt"
 import { randomUUID, randomInt } from "crypto"
+import { isLlmRateLimitError } from "@/utils/llm-errors"
 
 const text = (value, max) => typeof value === "string" && value.trim().length > 0 && value.trim().length <= max
 
@@ -38,7 +39,10 @@ export async function POST(request) {
     if (!Array.isArray(parsed) || !parsed.every((item) => text(item?.Question, 1000) && text(item?.Answer, 6000))) throw new Error("Invalid AI response")
     const [created] = await db.insert(MockInterview).values({ mockId: randomUUID(), jsonMockResp, jobPosition: body.jobPosition.trim(), jobDesc: body.jobDesc.trim(), jobExperience: String(body.jobExperience), createdBy: email, createdAt: new Date().toISOString().slice(0, 10) }).returning({ mockId: MockInterview.mockId })
     return NextResponse.json(created, { status: 201 })
-  } catch {
+  } catch (error) {
+    if (isLlmRateLimitError(error)) {
+      return NextResponse.json({ error: "Interview question generation is temporarily busy. Please try again later." }, { status: 429 })
+    }
     return NextResponse.json({ error: "Unable to generate the interview. Please try again." }, { status: 502 })
   }
 }

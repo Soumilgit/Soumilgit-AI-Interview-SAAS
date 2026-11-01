@@ -5,6 +5,7 @@ import { generateInterviewContent } from "@/utils/GeminiAIModal";
 import { NextResponse } from "next/server";
 import { getAuthenticatedEmail } from "@/utils/server-user";
 import { isRateLimited } from "@/utils/rate-limit";
+import { isLlmRateLimitError } from "@/utils/llm-errors";
 
 export async function POST(req) {
   try {
@@ -84,6 +85,12 @@ Return only valid JSON without any code blocks or markdown.`;
         throw new Error("Invalid response format");
       }
     } catch (error) {
+      if (isLlmRateLimitError(error)) {
+        return NextResponse.json(
+          { error: "Reformatting is temporarily unavailable because the AI service is busy. Please try again later." },
+          { status: 429 }
+        );
+      }
       console.error("JSON parsing error:", error);
       return NextResponse.json(
         { error: "Failed to parse AI response" },
@@ -105,6 +112,12 @@ Return only valid JSON without any code blocks or markdown.`;
       data: reformattedData,
     });
   } catch (error) {
+    if (isLlmRateLimitError(error)) {
+      return NextResponse.json(
+        { error: "Reformatting is temporarily unavailable because the AI service is busy. Please try again later." },
+        { status: 429 }
+      );
+    }
     console.error("Error reformatting questions:", error);
     return NextResponse.json(
       { error: "Internal server error" },
