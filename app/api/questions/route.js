@@ -7,6 +7,7 @@ import { getAuthenticatedEmail } from "@/utils/server-user"
 import { isRateLimited } from "@/utils/rate-limit"
 import { buildPrompt } from "@/utils/prompt"
 import { randomUUID } from "crypto"
+import { isLlmRateLimitError } from "@/utils/llm-errors"
 
 const validText = (value, max) => typeof value === "string" && value.trim().length > 0 && value.trim().length <= max
 
@@ -29,5 +30,8 @@ export async function POST(request) {
     if (!Array.isArray(parsed?.questions) || !parsed.questions.every((item) => validText(item?.Question, 1000) && validText(item?.Answer, 6000))) throw new Error("Invalid AI response")
     const [created] = await db.insert(Question).values({ mockId: randomUUID(), mockQuestionJsonResp: JSON.stringify(parsed), jobPosition: body.jobPosition.trim(), jobDesc: body.jobDesc.trim(), jobExperience: String(body.jobExperience), typeQuestion: body.typeQuestion.trim(), company: body.company.trim(), createdBy: email, createdAt: new Date().toISOString().slice(0, 10) }).returning({ mockId: Question.mockId })
     return NextResponse.json(created, { status: 201 })
-  } catch { return NextResponse.json({ error: "Unable to generate questions. Please try again." }, { status: 502 }) }
+  } catch (error) {
+    if (isLlmRateLimitError(error)) return NextResponse.json({ error: "Question generation is temporarily busy. Please try again later." }, { status: 429 })
+    return NextResponse.json({ error: "Unable to generate questions. Please try again." }, { status: 502 })
+  }
 }

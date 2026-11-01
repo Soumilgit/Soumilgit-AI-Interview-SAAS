@@ -8,6 +8,7 @@ import { getAuthenticatedEmail } from "@/utils/server-user"
 import { generateInterviewContent } from "@/utils/GeminiAIModal"
 import { buildPrompt } from "@/utils/prompt"
 import { isRateLimited } from "@/utils/rate-limit"
+import { isLlmRateLimitError } from "@/utils/llm-errors"
 
 const validItem = (item) => typeof item?.Question === "string" && item.Question.trim().length > 0 && item.Question.length <= 1000 && typeof item?.Answer === "string" && item.Answer.trim().length > 0 && item.Answer.length <= 6000
 
@@ -36,5 +37,8 @@ export async function POST(_request, { params }) {
     const updated = [...questions, ...generated]
     await db.update(MockInterview).set({ jsonMockResp: JSON.stringify(updated) }).where(and(eq(MockInterview.mockId, mockId), eq(MockInterview.createdBy, email)))
     return NextResponse.json({ questions: updated, complete: updated.length >= maxQuestionCount })
-  } catch { return NextResponse.json({ error: "Unable to generate follow-up questions. Please try again." }, { status: 502 }) }
+  } catch (error) {
+    if (isLlmRateLimitError(error)) return NextResponse.json({ error: "Follow-up questions are temporarily unavailable because the AI service is busy. Please try again later." }, { status: 429 })
+    return NextResponse.json({ error: "Unable to generate follow-up questions. Please try again." }, { status: 502 })
+  }
 }

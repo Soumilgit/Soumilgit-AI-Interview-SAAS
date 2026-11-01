@@ -5,6 +5,7 @@ import { generateInterviewContent } from "@/utils/GeminiAIModal";
 import { NextResponse } from "next/server";
 import { getAuthenticatedEmail } from "@/utils/server-user";
 import { isRateLimited } from "@/utils/rate-limit";
+import { isLlmRateLimitError } from "@/utils/llm-errors";
 
 export async function POST(req) {
   try {
@@ -35,6 +36,7 @@ export async function POST(req) {
 
     let successCount = 0;
     let failCount = 0;
+    let hitLlmRateLimit = false;
     const errors = [];
 
     // Process each question set
@@ -88,6 +90,15 @@ Return ONLY valid JSON:
         successCount++;
         
       } catch (error) {
+        if (isLlmRateLimitError(error)) {
+          hitLlmRateLimit = true;
+          failCount++;
+          errors.push({
+            mockId: questionSet.mockId,
+            error: "The AI service is temporarily busy.",
+          });
+          break;
+        }
         console.error(`Error reformatting question set ${questionSet.mockId}:`, error);
         failCount++;
         errors.push({
@@ -95,6 +106,14 @@ Return ONLY valid JSON:
           error: error.message,
         });
       }
+    }
+
+    if (hitLlmRateLimit) {
+      return NextResponse.json({
+        error: "Bulk reformatting was stopped because the AI service is temporarily busy. Please try again later.",
+        successCount,
+        failCount,
+      }, { status: 429 });
     }
 
     return NextResponse.json({

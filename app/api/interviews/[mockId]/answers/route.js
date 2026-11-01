@@ -6,6 +6,7 @@ import { getAuthenticatedEmail } from "@/utils/server-user"
 import { generateInterviewContent, transcribeAudio } from "@/utils/GeminiAIModal"
 import { isRateLimited } from "@/utils/rate-limit"
 import { buildPrompt } from "@/utils/prompt"
+import { isLlmRateLimitError } from "@/utils/llm-errors"
 
 export const maxDuration = 60
 
@@ -38,6 +39,9 @@ export async function POST(request, { params }) {
   if (body.action === "transcribe") {
     if (typeof body.audio !== "string" || body.audio.length > 4_000_000 || !/^audio\/webm(?:;codecs=opus)?$/.test(body.mimeType)) return NextResponse.json({ error: "Audio is too large or uses an unsupported format. Please record a shorter answer." }, { status: 400 })
     try { return NextResponse.json({ transcription: await transcribeAudio(body.audio, body.mimeType) }) } catch (error) {
+      if (isLlmRateLimitError(error)) {
+        return NextResponse.json({ error: "Transcription is temporarily unavailable because the AI service is busy. Please try again later." }, { status: 429 })
+      }
       console.error("Gemini transcription failed", { message: error instanceof Error ? error.message : "Unknown error" })
       return NextResponse.json({ error: "Transcription service is unavailable. Please try again shortly." }, { status: 502 })
     }
@@ -49,5 +53,10 @@ export async function POST(request, { params }) {
     if (!Number.isInteger(result.rating) || result.rating < 1 || result.rating > 10 || typeof result.feedback !== "string" || result.feedback.length > 3000) throw new Error("Invalid feedback")
     await db.insert(UserAnswer).values({ mockIdRef: mockId, question: body.question, correctAns: body.correctAnswer, userAns: body.userAnswer, feedback: result.feedback, rating: String(result.rating), userEmail: email, createdAt: new Date().toISOString().slice(0, 10) })
     return NextResponse.json(result, { status: 201 })
-  } catch { return NextResponse.json({ error: "Unable to evaluate your answer." }, { status: 502 }) }
+  } catch (error) {
+    if (isLlmRateLimitError(error)) {
+      return NextResponse.json({ error: "Your answer could not be scored because the AI service is temporarily busy. Please try again later. Your answer was not saved." }, { status: 429 })
+    }
+    return NextResponse.json({ error: "Unable to evaluate your answer." }, { status: 502 })
+  }
 }
